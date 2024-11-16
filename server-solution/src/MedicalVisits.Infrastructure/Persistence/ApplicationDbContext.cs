@@ -1,4 +1,5 @@
-﻿using MedicalVisits.Models.Entities;
+﻿using MedicalVisits.Infrastructure.Persistence.Configurations;
+using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<VisitRequest> VisitRequests { get; set; }
+    
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -31,7 +34,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
 
      
-        
+        builder.ApplyConfiguration(new VisitRequestConfiguration());
         
         
         builder.Entity<IdentityRole>().HasData(

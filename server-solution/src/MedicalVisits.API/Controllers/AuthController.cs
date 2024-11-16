@@ -10,16 +10,16 @@ namespace MedicalVisits.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public AuthController(IMediator mediator, UserManager<ApplicationUser> userManager)
+    public AuthController(IMediator mediator, UserManager<ApplicationUser> userManager) :
+        base(mediator, userManager)
     {
-        _mediator = mediator;
-        _userManager = userManager;
     }
+
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
@@ -29,14 +29,12 @@ public class AuthController : ControllerBase
 
         var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
-        // Генеруємо access token
         var accessToken = await _mediator.Send(new GenerateAccessTokenCommand 
         { 
             User = user, 
             Role = role 
         });
 
-        // Генеруємо та зберігаємо refresh token
         var refreshToken = Guid.NewGuid().ToString();
         await _mediator.Send(new UpdateRefreshTokenCommand
         {
@@ -51,4 +49,5 @@ public class AuthController : ControllerBase
             RefreshToken = refreshToken
         });
     }
+
 }
