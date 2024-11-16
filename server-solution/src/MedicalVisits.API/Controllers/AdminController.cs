@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +17,25 @@ public class AdminController : BaseController
     {
     }
 
+    
     [HttpGet("users")]
-    public IActionResult GetAllUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
         
-        
-        
-        return Ok();
+        try 
+        {
+            var command = new GetAllUsersQuery();
+            var result = await _Mediator.Send(command);
+
+            if (result == null)
+                return BadRequest();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // Додайте логування
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
     }
 }
