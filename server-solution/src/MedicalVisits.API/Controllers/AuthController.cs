@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
+using MedicalVisits.Application.Auth.Commands.RegisterPatient;
 using MedicalVisits.Models.Auth;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -29,10 +30,10 @@ public class AuthController : BaseController
 
         var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
-        var accessToken = await _mediator.Send(new GenerateAccessTokenCommand 
-        { 
-            User = user, 
-            Role = role 
+        var accessToken = await _mediator.Send(new GenerateAccessTokenCommand
+        {
+            User = user,
+            Role = role
         });
 
         var refreshToken = Guid.NewGuid().ToString();
@@ -50,4 +51,22 @@ public class AuthController : BaseController
         });
     }
 
+
+    [HttpPost("Register")]
+    public async Task<ActionResult<AuthResponse>> Register(RegisterPatientDto dto)
+    {
+        try
+        {
+            var result = await _mediator.Send(new CreatePatientCommand(dto));
+
+            if (!result.Succeeded)
+                return BadRequest(result.Error);
+
+            return Ok(result.Response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
 }

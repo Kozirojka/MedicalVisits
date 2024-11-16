@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
 
-public class UpdateRefreshTokenCommandHandler : IRequestHandler<UpdateRefreshTokenCommand, Unit>
+public class UpdateRefreshTokenCommandHandler : IRequestHandler<UpdateRefreshTokenCommand, string>
 {
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -13,12 +13,13 @@ public class UpdateRefreshTokenCommandHandler : IRequestHandler<UpdateRefreshTok
         _userManager = userManager;
     }
 
-    public async Task<Unit> Handle(UpdateRefreshTokenCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateRefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        request.User.RefreshToken = request.RefreshToken;
-        request.User.RefreshTokenExpiryTime = request.ExpiryTime;
+        var refreshToken = Guid.NewGuid().ToString();
+        request.User.RefreshToken = refreshToken;
+        request.User.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
         
         await _userManager.UpdateAsync(request.User);
-        return Unit.Value;
+        return refreshToken;
     }
 }

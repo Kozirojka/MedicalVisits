@@ -1,6 +1,7 @@
 using System.Text;
 using MediatR;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
+using MedicalVisits.Application.Auth.Commands.RegisterPatient;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +18,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
+
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {

@@ -13,8 +13,6 @@ public class CreatePatientCommand : IRequest<AuthResult>
 
     public RegisterPatientDto DriverRequest { get; set; }
     
-    
-    
 }
 
 
@@ -33,5 +31,4 @@ public class RegisterPatientDto
     public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Address { get; set; }
 }
