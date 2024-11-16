@@ -26,6 +26,7 @@
 
 
     <ItemGroup>
+      <Folder Include="Admin\Command\" />
       <Folder Include="Auth\Queries\" />
     </ItemGroup>
 
