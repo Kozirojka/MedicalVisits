@@ -149,6 +149,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Infrastructure\\MedicalVisits.Infrastructure.csproj": {
+                "projectPath": "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Infrastructure\\MedicalVisits.Infrastructure.csproj"
+              },
               "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Models\\MedicalVisits.Models.csproj": {
                 "projectPath": "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Models\\MedicalVisits.Models.csproj"
               }

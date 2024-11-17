@@ -2,6 +2,7 @@
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;
+using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Models.Auth;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
@@ -14,7 +15,7 @@ namespace MedicalVisits.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : BaseController
 {
-    
+
     public AuthController(IMediator mediator, UserManager<ApplicationUser> userManager) :
         base(mediator, userManager)
     {
@@ -56,12 +57,12 @@ public class AuthController : BaseController
         try 
         {
             var command = new CreatePatientCommand(dto);
-            var result = await _Mediator.Send(command);
+            AuthResult result = await _Mediator.Send(command);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Error);
+            if (result == null)
+                return BadRequest("I fuck your life its null");
 
-            return Ok(result.Response);
+            return Ok("every thing is "  + result);
         }
         catch (Exception ex)
         {

@@ -16,3 +16,5 @@ D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\Medic
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.Application\obj\Debug\net8.0\MedicalVisits.Application.pdb
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.Application\obj\Debug\net8.0\MedicalVisits.Application.genruntimeconfig.cache
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.Application\obj\Debug\net8.0\ref\MedicalVisits.Application.dll
+D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.Application\bin\Debug\net8.0\MedicalVisits.Infrastructure.dll
+D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.Application\bin\Debug\net8.0\MedicalVisits.Infrastructure.pdb

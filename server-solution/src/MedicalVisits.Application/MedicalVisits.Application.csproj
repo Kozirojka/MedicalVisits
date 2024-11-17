@@ -20,6 +20,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\MedicalVisits.Infrastructure\MedicalVisits.Infrastructure.csproj" />
       <ProjectReference Include="..\MedicalVisits.Models\MedicalVisits.Models.csproj" />
     </ItemGroup>
 
@@ -27,6 +28,7 @@
     <ItemGroup>
       <Folder Include="Admin\Command\" />
       <Folder Include="Auth\Queries\" />
+      <Folder Include="Patient\Queries\" />
     </ItemGroup>
 
 </Project>

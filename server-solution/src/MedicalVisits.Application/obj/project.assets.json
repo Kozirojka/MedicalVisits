@@ -1119,6 +1119,24 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+      "MedicalVisits.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "MediatR": "12.2.0",
+          "MedicalVisits.Models": "1.0.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0",
+          "Microsoft.EntityFrameworkCore": "8.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.0"
+        },
+        "compile": {
+          "bin/placeholder/MedicalVisits.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MedicalVisits.Infrastructure.dll": {}
+        }
+      },
       "MedicalVisits.Models/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -2843,6 +2861,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "MedicalVisits.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../MedicalVisits.Infrastructure/MedicalVisits.Infrastructure.csproj",
+      "msbuildProject": "../MedicalVisits.Infrastructure/MedicalVisits.Infrastructure.csproj"
+    },
     "MedicalVisits.Models/1.0.0": {
       "type": "project",
       "path": "../MedicalVisits.Models/MedicalVisits.Models.csproj",
@@ -2852,6 +2875,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "MediatR >= 12.2.0",
+      "MedicalVisits.Infrastructure >= 1.0.0",
       "MedicalVisits.Models >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.0",
@@ -2886,6 +2910,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
+            "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Infrastructure\\MedicalVisits.Infrastructure.csproj": {
+              "projectPath": "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Infrastructure\\MedicalVisits.Infrastructure.csproj"
+            },
             "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Models\\MedicalVisits.Models.csproj": {
               "projectPath": "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Models\\MedicalVisits.Models.csproj"
             }

@@ -689,6 +689,7 @@
       "MedicalVisits.Application/1.0.0": {
         "dependencies": {
           "MediatR": "12.2.0",
+          "MedicalVisits.Infrastructure": "1.0.0",
           "MedicalVisits.Models": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0",
