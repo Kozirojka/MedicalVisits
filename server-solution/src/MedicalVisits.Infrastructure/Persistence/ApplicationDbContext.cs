@@ -21,11 +21,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-        
-        // Придушуємо попередження про pending changes
-        optionsBuilder.ConfigureWarnings(warnings =>
-            warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning)
-                .Ignore(RelationalEventId.PendingModelChangesWarning));
     }
     
     

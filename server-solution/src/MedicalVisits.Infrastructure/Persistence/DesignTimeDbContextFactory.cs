@@ -9,7 +9,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=MedicalVisiters;Trusted_Connection=True;MultipleActiveResultSets=True;");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=MedicalVisits;Username=postgres;Password=admin");
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }

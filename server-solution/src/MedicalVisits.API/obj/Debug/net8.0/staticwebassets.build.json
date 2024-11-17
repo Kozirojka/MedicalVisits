@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "iM5UC8r+GC7xWjlP2XJGsmGuIcerMhYDmAKA3pVkkvc=",
+  "Source": "MedicalVisits.API",
+  "BasePath": "_content/MedicalVisits.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
