@@ -24,7 +24,7 @@ public class AuthResult
 }
 
 
-
+    
 public class RegisterPatientDto
 {
     public string Email { get; set; }
