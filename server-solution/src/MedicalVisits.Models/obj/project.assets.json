@@ -4705,6 +4705,7 @@
       "packagesPath": "C:\\Users\\Kostya\\.nuget\\packages\\",
       "outputPath": "D:\\Development\\PersonProject\\PetProjects\\MedicalVisits\\server-solution\\src\\MedicalVisits.Models\\obj\\",
       "projectStyle": "PackageReference",
+      "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
         "C:\\Users\\Kostya\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
@@ -4729,8 +4730,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "all"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net9.0": {
