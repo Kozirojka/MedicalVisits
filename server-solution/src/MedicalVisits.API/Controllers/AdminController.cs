@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -38,4 +39,6 @@ public class AdminController : BaseController
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+    
+    
 }

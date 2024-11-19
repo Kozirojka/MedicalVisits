@@ -123,3 +123,6 @@ D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\Medic
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\obj\Debug\net8.0\MedicalVisits.API.pdb
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\obj\Debug\net8.0\MedicalVisits.API.genruntimeconfig.cache
 D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\obj\Debug\net8.0\ref\MedicalVisits.API.dll
+D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\bin\Debug\net8.0\Castle.Core.dll
+D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+D:\Development\PersonProject\PetProjects\MedicalVisits\server-solution\src\MedicalVisits.API\bin\Debug\net8.0\Moq.dll
