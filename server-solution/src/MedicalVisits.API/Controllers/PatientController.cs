@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using MediatR;
+using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Patient.Command;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;

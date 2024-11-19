@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;

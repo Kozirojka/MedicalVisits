@@ -3,7 +3,7 @@ using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalVisits.API.Controllers;
+namespace MedicalVisits.API.Controllers.Base;
 
 
 [ApiController]
