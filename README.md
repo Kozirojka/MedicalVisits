@@ -1,25 +1,26 @@
-logic of the structure
+## Медична допомога на виклик
 
-MySolution.sln
-├── src/
-│   ├── MySolution.API/                # API контролери, конфігурація
-│   │   ├── Controllers/
-│   │   ├── Program.cs
-│   │   └── appsettings.json
-│   │
-│   ├── MySolution.Application/        # Бізнес логіка, CQRS
-│   │   ├── Commands/
-│   │   ├── Queries/
-│   │   ├── Interfaces/
-│   │   └── Services/
-│   │
-│   ├── MySolution.Domain/            # Доменні моделі, інтерфейси
-│   │   ├── Entities/
-│   │   ├── Enums/
-│   │   └── Interfaces/
-│   │
-│   └── MySolution.Infrastructure/    # База даних, зовнішні сервіси
-│       ├── Persistence/
-│       │   ├── Configurations/
-│       │   └── ApplicationDbContext.cs
-│       └── Repositories/
+## Опис
+
+Пацієнь назначає момент тоді
+коли йому буде комфортно
+побачити, лікаря лікар в свою 
+чергу приходить до свого пацієнта
+
+Відображаєтьсч шлях до різних пацієнтів 
+у лікаря на карті
+
+## Технології
+
+Asp.net core Api -> 
+    Autentification with JWT token
+    Identity core
+
+React in (future) 
+Postgress
+
+
+## Контакти
+
++380972575466
+
