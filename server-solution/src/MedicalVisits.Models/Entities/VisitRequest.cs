@@ -32,7 +32,7 @@ public class VisitRequest
     public string Address { get; private set; }
     public bool IsRegular { get; private set; }
     public bool HasMedicine { get; private set; }
-    public VisitStatus Status { get; private set; }
+    public VisitStatus Status { get; set; }
 
     [NotMapped] 
     public IReadOnlyCollection<string> RequiredMedications => _requiredMedications.AsReadOnly();
