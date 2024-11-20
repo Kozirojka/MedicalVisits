@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text;
+using MediatR;
 using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
@@ -71,4 +72,44 @@ public class AuthController : BaseController
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+
+    [HttpPost("Route")]
+    public async Task<string> GetRoute(DirectionRequest request)
+    {
+        string apiKey = "5b3ce3597851110001cf62486b87172ca31c4ca19b59ce2e1f809ad6";
+        string endpoint = "https://api.openrouteservice.org/v2/directions/driving-car";
+
+        // var resultDto = new DirectionRequest()
+        // {
+        //     Coordinates = request.Coordinates,
+        //     Format = request.Format,
+        //     Profile = request.Profile
+        // };
+        
+        var requestBody = @"
+        {
+            ""coordinates"": [
+                [8.681495, 49.41461], 
+                [8.687872, 49.420318]
+            ],
+            ""format"": ""json""
+        }";
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", apiKey);
+        
+        var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+        
+        var response = await client.PostAsync(endpoint, content);
+        var responseString = await response.Content.ReadAsStringAsync();
+        
+        return responseString;
+    }
+}
+
+public class DirectionRequest
+{
+    public List<List<double>> Coordinates { get; set; } = new(); // Список координат [довгота, широта]
+    public string Format { get; set; } = "json"; // Формат відповіді (завжди json)
+    public string Profile { get; set; } = "driving-car";    
 }
