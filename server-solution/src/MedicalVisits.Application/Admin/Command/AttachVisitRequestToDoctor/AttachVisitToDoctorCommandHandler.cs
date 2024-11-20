@@ -26,28 +26,31 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
         try
         {
             Console.WriteLine($"VisitId: {request.VisitRequestId} ----------------------------");
-            Console.WriteLine($"DoctorId: {request.DoctorId} ---------------------------------");
+            Console.WriteLine($"DoctorId: {request.DoctorId} ---------------------------------"); 
             
             int idTemp = request.VisitRequestId;
             
            var visit = await _context.VisitRequests.FindAsync(idTemp);
+           
             //Console.WriteLine($"--------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {visit.Status}");
             
-            // Логування значень перед оновленням статусу
-
-            // if (visit == null)
-            // {
-            //     return new resultOfAttach
-            //     {
-            //         Result = false,
-            //         Message = "VisitRequest not found"
-            //     };
-            // }
+            if (visit == null)
+            {
+                return new resultOfAttach
+                {
+                    Result = false,
+                    Message = "VisitRequest not found"
+                };
+            }
+            
+            visit.AssignDoctor(request.DoctorId);
+            visit.Status = VisitStatus.Approved;
+            
             
             // Логування перед збереженням змін
             Console.WriteLine("Saving changes...");
 
-           // await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new resultOfAttach
             {

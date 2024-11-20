@@ -19,15 +19,5 @@ public class VisitRequestConfiguration : IEntityTypeConfiguration<VisitRequest>
             .WithMany()
             .HasForeignKey(v => v.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Property(v => v.RequiredMedications)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null))
-            .HasColumnType("text")  // Змінено з jsonb на text
-            .Metadata.SetValueComparer(new ValueComparer<IReadOnlyCollection<string>>(
-                (c1, c2) => c1.SequenceEqual(c2),
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                c => c.ToList()));
     }
 }

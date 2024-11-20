@@ -1,4 +1,5 @@
-﻿using MedicalVisits.Models.Enums;
+﻿using System.Text.Json;
+using MedicalVisits.Models.Enums;
 
 namespace MedicalVisits.Models.Entities;
 
@@ -8,7 +9,6 @@ using MedicalVisits.Models.Enums;
 
 public class VisitRequest
 {
-    private readonly List<string> _requiredMedications = new();
 
     protected VisitRequest() { }
 
@@ -33,10 +33,7 @@ public class VisitRequest
     public bool IsRegular { get; private set; }
     public bool HasMedicine { get; private set; }
     public VisitStatus Status { get; set; }
-
-    [NotMapped] 
-    public IReadOnlyCollection<string> RequiredMedications => _requiredMedications.AsReadOnly();
-
+    
    
     public static VisitRequest Create(string patientId, DateTime dateTime, string description, string address)
     {
@@ -57,11 +54,6 @@ public class VisitRequest
     public void CancelVisit()
     {
         Status = VisitStatus.Cancelled;
-    }
-
-    public void AddRequiredMedication(string medication)
-    {
-        _requiredMedications.Add(medication);
     }
 
     public void SetIsRegular(bool isRegular)
