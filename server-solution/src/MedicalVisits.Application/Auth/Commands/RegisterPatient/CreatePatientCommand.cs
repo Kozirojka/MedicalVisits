@@ -22,8 +22,6 @@ public class AuthResult
     public string Error { get; set; }
     public AuthResponseDto Response { get; set; }
 }
-
-
     
 public class RegisterPatientDto
 {
@@ -31,4 +29,6 @@ public class RegisterPatientDto
     public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    
+    public string Address { get; set; }
 }

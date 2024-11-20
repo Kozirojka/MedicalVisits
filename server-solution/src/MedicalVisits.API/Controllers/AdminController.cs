@@ -1,6 +1,11 @@
 ﻿using MediatR;
 using MedicalVisits.API.Controllers.Base;
+using MedicalVisits.Application.Admin.Command.AttachVisitRequestToDoctor;
+using MedicalVisits.Application.Admin.Command.CreateADoctor;
+using MedicalVisits.Application.Admin.Queries.FindAppendingRequest;
+using MedicalVisits.Application.Admin.Queries.GetAllDoctors;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
+using MedicalVisits.Application.Admin.Queries.GetPatient;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +24,7 @@ public class AdminController : BaseController
     }
 
     
-    [HttpGet("users")]
+    [HttpGet("Users")]
     public async Task<IActionResult> GetAllUsers()
     {
         
@@ -39,6 +44,135 @@ public class AdminController : BaseController
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+
+    [HttpGet("Patient")]
+    public async Task<IActionResult> GetAllPatients()
+    {
+        try
+        {
+                var result = await _Mediator.Send(new GetPatientQuery());
+
+                if (result == null)
+                {
+                    return BadRequest("some troulee");
+                }
+
+                return Ok(result);
+                
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpGet("Doctors")]
+    public async Task<IActionResult> GetAllDoctors()
+    {
+        try
+        {
+            var result = await _Mediator.Send(new GetDoctorsQuery());
+
+            if (result == null)
+            {
+                return BadRequest("some troulee");
+            }
+
+            return Ok(result);
+                
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    [HttpGet("VisitsRequest")]
+    public async Task<IActionResult> GetPendingVisitRequests()
+    {
+        try
+        {
+            var command = new FindAppendingRequestQuery();
+            var result = await _Mediator.Send(command);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+            
+            
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
     
     
+    [HttpPost("Attach-VisitRequest")]
+    public async Task<IActionResult> AttachVisitResultToDoctor(InformationAboutVisitAndDoctorDTo dto)
+    {
+        try
+        {
+            var command = new AttachVisitToDoctorCommand()
+            {
+                DoctorId = dto.DoctorId,
+                VisitRequestId = dto.VisitId
+            };
+
+            // Якщо виникне помилка при відправці команди, вона буде спіймана нижче
+            resultOfAttach result = await _Mediator.Send(command);
+
+            if (result == null)
+            {
+                return BadRequest("Failed to assign the doctor.");
+            }
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            // Логування помилки
+            Console.WriteLine($"Error in AttachVisitResultToDoctor method: {e.Message}");
+            // Можна додати більше деталей, таких як e.StackTrace
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
+    }
+
+    [HttpPost("Doctor")]
+    public async Task<IActionResult> CreateDoctorAccount(RegisterDoctorDto dto)
+    {
+        try
+        {
+            var command = new CreateADoctorCommand(dto);
+            var result = await _Mediator.Send(command);  // Обов'язково чекайте результат!
+
+            // Перевірка, чи операція пройшла успішно
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { error = result.Error });
+            }
+
+            return Ok(result.Response);
+        }
+        catch (Exception ex)
+        {
+            // Логування помилки
+            Console.WriteLine($"Error creating doctor account: {ex.Message}");
+
+            // Повернення помилки клієнту
+            return StatusCode(500, new { error = $"An unexpected error occurred: {ex.Message}" });
+        }
+    }
+    
+}
+
+public class InformationAboutVisitAndDoctorDTo
+{
+    public string DoctorId { get; set; }
+    public int VisitId { get; set; }
 }

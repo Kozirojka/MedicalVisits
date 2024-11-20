@@ -4,3 +4,13 @@
   "firstName": "Killo",
   "lastName": "Komv"
 }
+
+
+
+{
+  "email": "testPatient1@gmail.com",
+  "password": "testPatient1!",
+  "firstName": "Roma",
+  "lastName": "Kola",
+  "address": "Testing yaremi 4"
+}

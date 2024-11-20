@@ -44,7 +44,6 @@ public class CreateVisitRequestCommandHandler : IRequestHandler<CreateVisitReque
         
         if (!string.IsNullOrEmpty(request.RequiredMedications))
         {
-            visitRequest.AddRequiredMedication(request.RequiredMedications);
         }
 
         // Зберігаємо в базу
