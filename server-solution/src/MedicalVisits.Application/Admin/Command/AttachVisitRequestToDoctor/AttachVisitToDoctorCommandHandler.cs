@@ -11,7 +11,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMediator _mediator;
-    private readonly ApplicationDbContext _context; // Додайте контекст
+    private readonly ApplicationDbContext _context; 
 
     public AttachVisitToDoctorCommandHandler(UserManager<ApplicationUser> userManager, IMediator mediator,
         ApplicationDbContext context)
@@ -47,7 +47,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
             visit.Status = VisitStatus.Approved;
             
             
-            // Логування перед збереженням змін
+           
             Console.WriteLine("Saving changes...");
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -60,7 +60,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
         }
         catch (Exception ex)
         {
-            // Логування помилки
+            
             Console.WriteLine($"Error in Handle method: {ex.Message}");
             Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
