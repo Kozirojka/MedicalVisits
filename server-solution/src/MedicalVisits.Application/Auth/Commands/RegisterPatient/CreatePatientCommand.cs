@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using MedicalVisits.Application.Admin.Queries.GetNearestDoctors;
+using MedicalVisits.Models;
 using MedicalVisits.Models.Auth;
 using MedicalVisits.Models.Dtos;
 
@@ -15,14 +17,13 @@ public class CreatePatientCommand : IRequest<AuthResult>
     
 }
 
-
 public class AuthResult
 {
     public bool Succeeded { get; set; }
     public string Error { get; set; }
     public AuthResponseDto Response { get; set; }
 }
-    
+
 public class RegisterPatientDto
 {
     public string Email { get; set; }
@@ -30,5 +31,5 @@ public class RegisterPatientDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     
-    public string Address { get; set; }
+    public Address Address { get; set; }
 }

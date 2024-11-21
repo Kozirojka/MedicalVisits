@@ -8,5 +8,13 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
+    
+    public Address Address { get; set; }
+
+    // Метод для оновлення адреси
+    public void UpdateAddress(string city, string street, string building, string region, string apartment, string country)
+    {
+        Address = new Address(city, street, building, region, apartment, country);
+    }
 }
     

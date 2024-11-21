@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;
+using MedicalVisits.Models;
 
 namespace MedicalVisits.Application.Admin.Command.CreateADoctor;
 
@@ -21,8 +22,7 @@ public class RegisterDoctorDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     
-    public string Address { get; set; }
-    
+    public Address Address { get; set; }
     
     public string Specialization { get; set; }
     public string LicenseNumber { get; set; }

@@ -35,7 +35,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 
-// Налаштування автентифікації
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -113,12 +112,10 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Приберіть перевірку if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    // Ця строчка робить swagger стартовою сторінкою
     c.RoutePrefix = string.Empty;
 });
 app.UseCors("AllowSpecificOrigin");

@@ -1,5 +1,4 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
-using MedicalVisits.Infrastructure.Persistence.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -20,7 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     
     public DbSet<PatientProfile> PatientProfiles { get; set; }
     public DbSet<DoctorProfile> DoctorProfiles { get; set; }
-    
+    public DbSet<WorkSchedule> WorkSchedules { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,6 +32,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
 
      
+        builder.Entity<WorkSchedule>()
+            .HasOne(ws => ws.Doctor)
+            .WithMany(d => d.WorkSchedules)
+            .HasForeignKey(ws => ws.DoctorProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<WorkSchedule>()
+            .HasIndex(ws => new { ws.DoctorProfileId, ws.DayOfWeek })
+            .IsUnique();
+        
+        builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new VisitRequestConfiguration());
         builder.ApplyConfiguration(new DoctorProfileConfiguration());
         builder.ApplyConfiguration(new PatientProfileConfiguration());

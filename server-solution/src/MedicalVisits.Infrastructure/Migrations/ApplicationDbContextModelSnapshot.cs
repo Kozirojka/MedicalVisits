@@ -102,9 +102,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e425c663-c590-4edc-8d4c-1b777f967002",
+                            Id = "35093bf4-837b-4fd3-9961-fbecd1a31729",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6a09e4dc-4d86-4bb6-88f2-624230b06ad2",
+                            ConcurrencyStamp = "ce79b504-a98e-4dbb-99c7-063fcbc05dce",
                             Email = "admin@medicalvisits.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -112,9 +112,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
                             NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBAenIheZwZSOJtWizng5y+e0iywXuSJkpJYvIqTlt+k2Z6UTfNWnkVTgnjBqwxVNQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED9MIABM7yApspIDia1cdBrpAkv8s3z3l3sobbUlWgHtTNXkJwMQ+B+LBQ6JES771g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6eb2ce72-db98-4a5c-af55-7abadfe6c89c",
+                            SecurityStamp = "d0f8225a-f6b2-4701-a323-c520520bcc6e",
                             TwoFactorEnabled = false,
                             UserName = "admin@medicalvisits.com"
                         });
@@ -157,11 +157,6 @@ namespace MedicalVisits.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -199,6 +194,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.Property<string>("DoctorId")
                         .HasColumnType("text");
 
+                    b.Property<int?>("DoctorProfileId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("HasMedicine")
                         .HasColumnType("boolean");
 
@@ -216,9 +214,47 @@ namespace MedicalVisits.Infrastructure.Migrations
 
                     b.HasIndex("DoctorId");
 
+                    b.HasIndex("DoctorProfileId");
+
                     b.HasIndex("PatientId");
 
                     b.ToTable("VisitRequests");
+                });
+
+            modelBuilder.Entity("MedicalVisits.Models.Entities.WorkSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DoctorProfileId")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("interval");
+
+                    b.Property<bool>("IsHoliday")
+                        .HasColumnType("boolean");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("interval");
+
+                    b.Property<int?>("VisitRequestId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisitRequestId");
+
+                    b.HasIndex("DoctorProfileId", "DayOfWeek")
+                        .IsUnique();
+
+                    b.ToTable("WorkSchedules");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -250,28 +286,28 @@ namespace MedicalVisits.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "a3d55aac-49b5-41f2-98c6-249615b863fc",
+                            ConcurrencyStamp = "b02abd2c-aa16-491d-97e6-1d723acaadaf",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "cca419e6-9605-4ee3-8d1e-98cb15a96c33",
+                            ConcurrencyStamp = "5ff7b9ff-b59d-4be5-8658-0bbbb0860320",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
                             Id = "3",
-                            ConcurrencyStamp = "99ea09fc-3df0-482c-892f-178a57f2b557",
+                            ConcurrencyStamp = "6098a65d-f601-4e85-b2db-2f0eb379eae4",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
                             Id = "4",
-                            ConcurrencyStamp = "cf15539e-6930-4960-9097-423a56983f12",
+                            ConcurrencyStamp = "165a6e23-1a06-419c-967c-2fad732d7828",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         });
@@ -366,7 +402,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "e425c663-c590-4edc-8d4c-1b777f967002",
+                            UserId = "35093bf4-837b-4fd3-9961-fbecd1a31729",
                             RoleId = "1"
                         });
                 });
@@ -388,6 +424,55 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("MedicalVisits.Models.Entities.ApplicationUser", b =>
+                {
+                    b.OwnsOne("MedicalVisits.Models.Address", "Address", b1 =>
+                        {
+                            b1.Property<string>("ApplicationUserId")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Apartment")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("character varying(50)");
+
+                            b1.Property<string>("Building")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("character varying(50)");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("ApplicationUserId");
+
+                            b1.ToTable("AspNetUsers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationUserId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.DoctorProfile", b =>
@@ -419,6 +504,10 @@ namespace MedicalVisits.Infrastructure.Migrations
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("MedicalVisits.Models.Entities.DoctorProfile", null)
+                        .WithMany("visitRequests")
+                        .HasForeignKey("DoctorProfileId");
+
                     b.HasOne("MedicalVisits.Models.Entities.ApplicationUser", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
@@ -428,6 +517,21 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("MedicalVisits.Models.Entities.WorkSchedule", b =>
+                {
+                    b.HasOne("MedicalVisits.Models.Entities.DoctorProfile", "Doctor")
+                        .WithMany("WorkSchedules")
+                        .HasForeignKey("DoctorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MedicalVisits.Models.Entities.VisitRequest", null)
+                        .WithMany("WorkSchedules")
+                        .HasForeignKey("VisitRequestId");
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -479,6 +583,18 @@ namespace MedicalVisits.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MedicalVisits.Models.Entities.DoctorProfile", b =>
+                {
+                    b.Navigation("WorkSchedules");
+
+                    b.Navigation("visitRequests");
+                });
+
+            modelBuilder.Entity("MedicalVisits.Models.Entities.VisitRequest", b =>
+                {
+                    b.Navigation("WorkSchedules");
                 });
 #pragma warning restore 612, 618
         }
