@@ -15,14 +15,13 @@ public class CreatePatientCommand : IRequest<AuthResult>
     
 }
 
-
 public class AuthResult
 {
     public bool Succeeded { get; set; }
     public string Error { get; set; }
     public AuthResponseDto Response { get; set; }
 }
-    
+
 public class RegisterPatientDto
 {
     public string Email { get; set; }

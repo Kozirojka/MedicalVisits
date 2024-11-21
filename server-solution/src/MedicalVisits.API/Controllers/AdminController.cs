@@ -5,9 +5,11 @@ using MedicalVisits.Application.Admin.Command.CreateADoctor;
 using MedicalVisits.Application.Admin.Queries.FindAppendingRequest;
 using MedicalVisits.Application.Admin.Queries.GetAllDoctors;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
+using MedicalVisits.Application.Admin.Queries.GetNearestDoctors;
 using MedicalVisits.Application.Admin.Queries.GetPatient;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -169,6 +171,23 @@ public class AdminController : BaseController
         }
     }
     
+    //витягуєм з бази даних, 10 лікарів, та їх адреса
+    [HttpGet("Nearest-Doctor")]
+    public async Task<IActionResult> GetListOfNearestDoctors(AddressDto dto)
+    {
+
+
+        var query = new GetListOfNearestDoctorQuery(dto);
+
+        var resultOfquery = await _Mediator.Send(query);
+
+        if (resultOfquery == null)
+        {
+            return BadRequest("у тебе великі проблеми є у цьому житті");
+        }
+        
+        return Ok(resultOfquery);
+    }
 }
 
 public class InformationAboutVisitAndDoctorDTo

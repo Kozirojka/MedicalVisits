@@ -43,7 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(ws => new { ws.DoctorProfileId, ws.DayOfWeek })
             .IsUnique();
         
-        
+        builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new VisitRequestConfiguration());
         builder.ApplyConfiguration(new DoctorProfileConfiguration());
         builder.ApplyConfiguration(new PatientProfileConfiguration());

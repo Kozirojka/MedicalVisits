@@ -3,6 +3,7 @@ using System;
 using MedicalVisits.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicalVisits.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241121172135_AddCutryToAddressToDb")]
+    partial class AddCutryToAddressToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,9 +105,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "05cb2638-dfe9-4c29-aad2-77acbf8f07f1",
+                            Id = "d915cccc-8614-47f1-9198-1944c95d5b97",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2917d737-233c-4b97-9d63-acb81b44ac34",
+                            ConcurrencyStamp = "849ef58f-59f2-4171-a417-92942958fd05",
                             Email = "admin@medicalvisits.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -112,9 +115,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
                             NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOoKX+ShItSSJIx65qV3nF13UtFCN0DXx+6hAdQdNm4qY/Lq6DuDkfUjPpk29DeziA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENHiSjAUV1r3lZyJQYREQnv2vrFLOmxcAQ0d2UG94A0WMfVKwtyI7uWh4Ky81ZQMew==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e1744517-c61d-4e5f-87c2-6f2d48ef231e",
+                            SecurityStamp = "c3f854ad-8392-4492-a508-5a2a42ae881f",
                             TwoFactorEnabled = false,
                             UserName = "admin@medicalvisits.com"
                         });
@@ -291,28 +294,28 @@ namespace MedicalVisits.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "7fa743b5-4f37-4d8c-9111-9891cb14a843",
+                            ConcurrencyStamp = "ba897fb7-e185-471e-ae48-a2c982f072fb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "f0ba484e-b686-432d-bfb3-d4060e2b32bd",
+                            ConcurrencyStamp = "7784b59d-2b34-4e26-9157-643092ef4e7a",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
                             Id = "3",
-                            ConcurrencyStamp = "9b807dc7-ae84-4951-97a2-2cee9403608e",
+                            ConcurrencyStamp = "9b4ad793-a5d6-4267-b35a-98a6039bce14",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
                             Id = "4",
-                            ConcurrencyStamp = "b9e8ee15-f64f-4a35-a496-db03b3dfe6f7",
+                            ConcurrencyStamp = "5b1f8753-1fd8-44a3-aeab-c622e7908f68",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         });
@@ -407,7 +410,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "05cb2638-dfe9-4c29-aad2-77acbf8f07f1",
+                            UserId = "d915cccc-8614-47f1-9198-1944c95d5b97",
                             RoleId = "1"
                         });
                 });
