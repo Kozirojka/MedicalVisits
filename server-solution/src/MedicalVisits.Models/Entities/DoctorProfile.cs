@@ -7,5 +7,7 @@ public class DoctorProfile
     public ApplicationUser User { get; set; }
     public string Specialization { get; set; }
     public string LicenseNumber { get; set; }
-    // Інші специфічні поля лікаря
+    
+    public ICollection<WorkSchedule>? WorkSchedules { get; set; }
+    public ICollection<VisitRequest>? visitRequests { get; set; }
 }
