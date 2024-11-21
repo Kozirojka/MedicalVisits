@@ -22,18 +22,35 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
         _dbContext = dbContext;
     }
     
+    
+    /*
+     * Рекомендації для оптимізації:
+Кешування результатів: Зберігайте результати API-запитів, щоб уникнути повторних звернень.
+Групування запитів: Використовуйте Matrix API для розрахунку між кількома точками одночасно, а не поодинокі запити.
+Оптимізація даних: Скоротіть кількість точок або уточніть географічні зони для запитів.
+     */
     public async Task<List<DoctorProfileWithDistance>> Handle(GetListOfNearestDoctorQuery request, CancellationToken cancellationToken)
     {
-        
-        
+        Console.ForegroundColor = ConsoleColor.Red; // Встановлюємо червоний колір тексту
+        Console.OutputEncoding = Encoding.UTF8;
         // Підготовка адреси пацієнта
+        
+        //Працює 100 процентів, якщо брати вулиці англійською мовою,
+        //щоб найти, наприклад вулицю княгині
+        //ольги потрібно у вулиці ввести 
+        // Kniahyni Olhy Street
+        
         var patientAddress = $"{request.Address.Street}, {request.Address.City}, {request.Address.State}, {request.Address.Country}";
+
+        //Console.WriteLine($"{patientAddress} patient adresses");
+        
         var patientCoordinates = await GetCoordinatesFromAddress(patientAddress);
 
         
-        Console.WriteLine($"Coordinates: {patientCoordinates}");
+        
+            //Console.WriteLine($"Coordinates: {patientCoordinates[0]} + {patientCoordinates[1]} -------------------------------");
         if (patientCoordinates == null)
-            throw new Exception("Не вдалося визначити координати пацієнта");
+            throw new Exception("Do not can find the coodicnate if user");
         
         
         
@@ -45,6 +62,10 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
             .ToListAsync();
 
 
+        //foreach (var doctor in doctors)
+         //   Console.WriteLine(doctor.User.FirstName);
+        
+        
         if (doctors == null)
         {
             throw new Exception("Не знайдено лікарів");
@@ -55,15 +76,24 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
         
         foreach (var doctor in doctors)
         {
+            int i = 0; 
+            
             var doctorAddress = $"{doctor.User.Address.Street}, {doctor.User.Address.City}, {doctor.User.Address.Region}, {doctor.User.Address.Country}";
             var doctorCoordinates = await GetCoordinatesFromAddress(doctorAddress);
 
+
+           // Console.WriteLine($"{doctorAddress}, {doctorCoordinates}");
+           // Console.WriteLine($"{doctorCoordinates[0]} +++++++{doctorCoordinates[1]}");
+            
+            
             if (doctorCoordinates == null)
-                continue; // Пропускаємо лікарів, для яких не вдалося визначити координати
+                continue;
 
             // Розрахунок маршруту
             var distance = await GetDistanceBetweenCoordinates(patientCoordinates, doctorCoordinates);
 
+            Console.WriteLine("Дистанція: " + distance);
+            
             if (distance != null)
             {
                 doctorDistances.Add(new DoctorProfileWithDistance
@@ -72,6 +102,8 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
                     Distance = distance.Value
                 });
             }
+
+            i++;
         }
         
         // Сортування за відстанню
@@ -87,10 +119,9 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
     public class DoctorProfileWithDistance
     {
         public DoctorProfile Doctor { get; set; }
-        public double Distance { get; set; } // Відстань у метрах
+        public double Distance { get; set; } 
     }
     
-    // Отримання координат для адреси
     private async Task<List<double>?> GetCoordinatesFromAddress(string address)
     {
         string apiKey = "5b3ce3597851110001cf62486b87172ca31c4ca19b59ce2e1f809ad6";
@@ -111,11 +142,14 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
         return new List<double> { coordinates[0].GetDouble(), coordinates[1].GetDouble() };
     }
     
-    // Отримання відстані між двома координатами
     private async Task<double?> GetDistanceBetweenCoordinates(List<double> startCoordinates, List<double> endCoordinates)
     {
         string apiKey = "5b3ce3597851110001cf62486b87172ca31c4ca19b59ce2e1f809ad6";
         string endpoint = "https://api.openrouteservice.org/v2/directions/driving-car";
+
+        // Логування координат
+        Console.WriteLine($"Start Coordinates: {startCoordinates[0]}, {startCoordinates[1]}");
+        Console.WriteLine($"End Coordinates: {endCoordinates[0]}, {endCoordinates[1]}");
 
         var requestBody = new
         {
@@ -125,20 +159,31 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
         };
 
         using var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Add("Authorization", apiKey);
+
         var response = await client.PostAsync(
             endpoint,
             new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
         );
 
+        var directionsString = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("Directions Response: " + directionsString);
+
         if (!response.IsSuccessStatusCode) return null;
 
-        var jsonString = await response.Content.ReadAsStringAsync();
-        var json = JsonDocument.Parse(jsonString);
+        var json = JsonDocument.Parse(directionsString);
 
-        return json.RootElement
-            .GetProperty("routes")[0]
-            .GetProperty("summary")
-            .GetProperty("distance")
-            .GetDouble();
+        if (json.RootElement.TryGetProperty("routes", out var routes) && routes.GetArrayLength() > 0)
+        {
+            var distance = routes[0].GetProperty("summary").GetProperty("distance").GetDouble();
+            return distance;
+        }
+        else
+        {
+            Console.WriteLine("No route found or invalid response.");
+            return null;
+        }
     }
+
 }

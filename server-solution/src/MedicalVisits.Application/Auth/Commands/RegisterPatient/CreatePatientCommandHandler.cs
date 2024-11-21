@@ -36,6 +36,8 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
+        Console.WriteLine($"-------------{request.DriverRequest.Address.Country}----------------------------");
+        
         // Перевірка полів request
         if (string.IsNullOrWhiteSpace(request.DriverRequest.Email) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.Password) ||
@@ -63,8 +65,14 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             UserName = request.DriverRequest.Email,
             Email = request.DriverRequest.Email,
             FirstName = request.DriverRequest.FirstName,
-            LastName = request.DriverRequest.LastName
+            LastName = request.DriverRequest.LastName,
+            
+            //Value Object like in ddd
+            Address = request.DriverRequest.Address
         };
+        
+        
+        
         var result = await _userManager.CreateAsync(user, request.DriverRequest.Password);
         if (!result.Succeeded)
         {
@@ -107,7 +115,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
         var patientProfile = new PatientProfile
         {
             UserId = user.Id,
-            Address = request.DriverRequest.Address
         };
 
 
@@ -182,7 +189,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
                 Role = "Patient",
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Address = patientProfile.Address
             }
         };
     }

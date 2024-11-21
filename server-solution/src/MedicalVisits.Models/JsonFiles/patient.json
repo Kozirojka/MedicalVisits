@@ -1,16 +1,27 @@
 ﻿{
-  "email": "patientOrigin@gmail.com",
-  "password": "patientOrigin!123",
-  "firstName": "Killo",
-  "lastName": "Komv"
+  "email": "passwArtur123@gmail.com",
+  "password": "Artur123!",
+  "firstName": "Артур",
+  "lastName": "Хромов",
+  "address": {
+    "city": "Львів",
+    "street": "Полуботка",
+    "building": "5",
+    "apartment": "3",
+    "region": "Львів",
+    "country": "Україна"
+  },
+  "email": "passwRoman123@gmail.com",
+  "password": "Roman123!",
+  "firstName": "Роман",
+  "lastName": "Кравчук",
+  "address": {
+    "city": "Львів",
+    "street": "Архипенка",
+    "building": "1",
+    "apartment": "4",
+    "region": "Львів",
+    "country": "Україна"
+  }
 }
 
-
-
-{
-  "email": "testPatient1@gmail.com",
-  "password": "testPatient1!",
-  "firstName": "Roma",
-  "lastName": "Kola",
-  "address": "Testing yaremi 4"
-}

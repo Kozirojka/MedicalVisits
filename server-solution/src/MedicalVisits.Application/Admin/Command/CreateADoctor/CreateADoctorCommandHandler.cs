@@ -34,7 +34,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
             };
         }
 
-        // Перевірка на порожні поля
         if (string.IsNullOrWhiteSpace(request.DriverRequest.Email) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.Password) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.FirstName) ||
@@ -49,7 +48,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
 
         try
         {
-            // Перевірка на існуючий Email
             if (await _userManager.FindByEmailAsync(request.DriverRequest.Email) != null)
             {
                 return new AuthResult
@@ -64,7 +62,8 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
                 UserName = request.DriverRequest.Email,
                 Email = request.DriverRequest.Email,
                 FirstName = request.DriverRequest.FirstName,
-                LastName = request.DriverRequest.LastName
+                LastName = request.DriverRequest.LastName,
+                Address = request.DriverRequest.Address,
             };
 
             var result = await _userManager.CreateAsync(user, request.DriverRequest.Password);
@@ -77,7 +76,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
                 };
             }
 
-            // Додавання ролі до користувача
             var roleResult = await _userManager.AddToRoleAsync(user, "Doctor");
             if (!roleResult.Succeeded)
             {
@@ -121,7 +119,7 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
             }
             catch (Exception ex)
             {
-                await _userManager.DeleteAsync(user); // Відкат створення користувача
+                await _userManager.DeleteAsync(user); 
                 return new AuthResult
                 {
                     Succeeded = false,
@@ -149,7 +147,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
                 };
             }
 
-            // Оновлення користувача з Refresh Token
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             var updateResult = await _userManager.UpdateAsync(user);
@@ -162,7 +159,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
                 };
             }
 
-            // Фінальна перевірка токенів
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(refreshToken))
             {
                 return new AuthResult
@@ -172,7 +168,6 @@ public class CreateADoctorCommandHandler : IRequestHandler<CreateADoctorCommand,
                 };
             }
 
-            // Успішне завершення
             return new AuthResult
             {
                 Succeeded = true,

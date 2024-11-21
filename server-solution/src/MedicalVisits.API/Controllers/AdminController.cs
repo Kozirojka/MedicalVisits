@@ -138,9 +138,7 @@ public class AdminController : BaseController
         }
         catch (Exception e)
         {
-            // Логування помилки
             Console.WriteLine($"Error in AttachVisitResultToDoctor method: {e.Message}");
-            // Можна додати більше деталей, таких як e.StackTrace
             return StatusCode(500, "An error occurred while processing your request.");
         }
     }
@@ -163,16 +161,14 @@ public class AdminController : BaseController
         }
         catch (Exception ex)
         {
-            // Логування помилки
             Console.WriteLine($"Error creating doctor account: {ex.Message}");
 
-            // Повернення помилки клієнту
             return StatusCode(500, new { error = $"An unexpected error occurred: {ex.Message}" });
         }
     }
     
     //витягуєм з бази даних, 10 лікарів, та їх адреса
-    [HttpGet("Nearest-Doctor")]
+    [HttpPost("Nearest-Doctor")]
     public async Task<IActionResult> GetListOfNearestDoctors(AddressDto dto)
     {
 

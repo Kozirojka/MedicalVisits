@@ -1,5 +1,4 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
-using MedicalVisits.Infrastructure.Persistence.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

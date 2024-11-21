@@ -14,12 +14,8 @@ public class PatientProfileConfiguration : IEntityTypeConfiguration<PatientProfi
             .WithOne()
             .HasForeignKey<PatientProfile>(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        // Додаткові налаштування полів
-        builder.Property(p => p.Address)
-            .HasMaxLength(200)
-            .IsRequired();
-            
+        
+        
     }
 }
 

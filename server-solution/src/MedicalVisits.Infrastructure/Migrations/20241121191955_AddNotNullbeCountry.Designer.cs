@@ -3,6 +3,7 @@ using System;
 using MedicalVisits.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicalVisits.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241121191955_AddNotNullbeCountry")]
+    partial class AddNotNullbeCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,9 +105,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35093bf4-837b-4fd3-9961-fbecd1a31729",
+                            Id = "2a3044ae-2233-4da9-9984-faff17403f0d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ce79b504-a98e-4dbb-99c7-063fcbc05dce",
+                            ConcurrencyStamp = "746f76d0-a170-48d7-a5e6-3eb4f1c9d36e",
                             Email = "admin@medicalvisits.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -112,9 +115,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
                             NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED9MIABM7yApspIDia1cdBrpAkv8s3z3l3sobbUlWgHtTNXkJwMQ+B+LBQ6JES771g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF8SqCB/fYPnyiVZ+/MwJl+LPpwaz/Kof5Af+pf4HxfVh/JRTtHUKWekxQlG3r0WBw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d0f8225a-f6b2-4701-a323-c520520bcc6e",
+                            SecurityStamp = "05cf7f27-6575-4851-b582-20d944ff93ea",
                             TwoFactorEnabled = false,
                             UserName = "admin@medicalvisits.com"
                         });
@@ -156,6 +159,11 @@ namespace MedicalVisits.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -286,28 +294,28 @@ namespace MedicalVisits.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "b02abd2c-aa16-491d-97e6-1d723acaadaf",
+                            ConcurrencyStamp = "9aebb599-b171-47d8-bcf2-9c291b3844d8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "5ff7b9ff-b59d-4be5-8658-0bbbb0860320",
+                            ConcurrencyStamp = "6f3291f8-d3ee-4f50-ae69-5d233cb35afe",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
                             Id = "3",
-                            ConcurrencyStamp = "6098a65d-f601-4e85-b2db-2f0eb379eae4",
+                            ConcurrencyStamp = "6a353281-d15a-4cda-b3f9-a37619b77024",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
                             Id = "4",
-                            ConcurrencyStamp = "165a6e23-1a06-419c-967c-2fad732d7828",
+                            ConcurrencyStamp = "82dd5c24-6dd8-4a4b-9e1b-76f2b9acf9ef",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         });
@@ -402,7 +410,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "35093bf4-837b-4fd3-9961-fbecd1a31729",
+                            UserId = "2a3044ae-2233-4da9-9984-faff17403f0d",
                             RoleId = "1"
                         });
                 });
@@ -448,11 +456,6 @@ namespace MedicalVisits.Infrastructure.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
 
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
                             b1.Property<string>("Region")
                                 .IsRequired()
                                 .HasMaxLength(100)
@@ -471,8 +474,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                                 .HasForeignKey("ApplicationUserId");
                         });
 
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.DoctorProfile", b =>

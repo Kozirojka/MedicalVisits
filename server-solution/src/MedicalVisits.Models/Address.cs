@@ -7,17 +7,17 @@ public class Address
     public string Building { get; }
     public string Apartment { get; }
     public string Region { get; } // Область
-    public string? Country { get; }
+    public string Country { get; }
 
     private Address() { } // Для EF Core
 
-    public Address(string city, string street, string building, string region, string? apartment = null, string? country = "Ukraine")
+    public Address(string city, string street, string building, string region, string country, string apartment)
     {
         if (string.IsNullOrWhiteSpace(city)) throw new ArgumentException("City is required");
         if (string.IsNullOrWhiteSpace(street)) throw new ArgumentException("Street is required");
         if (string.IsNullOrWhiteSpace(building)) throw new ArgumentException("Building is required");
         if (string.IsNullOrWhiteSpace(region)) throw new ArgumentException("Region is required");
-        if (string.IsNullOrWhiteSpace(Country)) throw new ArgumentException("Country is required");
+        if (string.IsNullOrWhiteSpace(country)) throw new ArgumentException("Country is required");
 
         City = city;
         Street = street;

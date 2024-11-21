@@ -25,7 +25,7 @@ public class GetPatientQueryHandler : IRequestHandler<GetPatientQuery, List<Pati
         CancellationToken cancellationToken)
     {
         
-        
+        //проблема в майбутньому тут може бути через те, що я забрав адрему 
         //Проблема того, чому воно не знаходило, це те, що у табличці пацієнти немає ніяких даних
         var patients = await _dbContext.PatientProfiles
             .Include(p => p.User)
@@ -35,7 +35,6 @@ public class GetPatientQueryHandler : IRequestHandler<GetPatientQuery, List<Pati
                 Email = p.User.Email,
                 FirstName = p.User.FirstName,
                 LastName = p.User.LastName,
-                Address = p.Address
             })
             .ToListAsync(cancellationToken);
 

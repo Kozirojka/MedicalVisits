@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
-using MedicalVisits.Models.Entities;
+﻿using MedicalVisits.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MedicalVisits.Infrastructure.Persistence.Configurations;
+namespace MedicalVisits.Infrastructure.Configurations;
 
 public class VisitRequestConfiguration : IEntityTypeConfiguration<VisitRequest>
 {

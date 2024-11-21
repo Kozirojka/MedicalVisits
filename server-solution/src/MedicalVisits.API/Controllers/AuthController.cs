@@ -114,7 +114,7 @@ public class AuthController : BaseController
 
 public class DirectionRequest
 {
-    public List<List<double>> Coordinates { get; set; } = new(); // Список координат [довгота, широта]
-    public string Format { get; set; } = "json"; // Формат відповіді (завжди json)
+    public List<List<double>> Coordinates { get; set; } = new(); 
+    public string Format { get; set; } = "json"; 
     public string Profile { get; set; } = "driving-car";    
 }

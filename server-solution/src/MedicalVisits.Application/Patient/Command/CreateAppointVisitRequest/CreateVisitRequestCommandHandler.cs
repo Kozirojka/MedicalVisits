@@ -24,14 +24,12 @@ public class CreateVisitRequestCommandHandler : IRequestHandler<CreateVisitReque
         CreateVisitRequestCommand request, 
         CancellationToken cancellationToken)
     {
-        // Перевірка користувача
         var patient = await _userManager.FindByIdAsync(request.PatientId);
         if (patient == null)
         {
             throw new ApplicationException("Patient not found");
         }
 
-        // Створення візиту
         var visitRequest = VisitRequest.Create(
             request.PatientId,
             request.DateTime,
@@ -39,14 +37,12 @@ public class CreateVisitRequestCommandHandler : IRequestHandler<CreateVisitReque
             request.Address
         );
 
-        // Встановлення додаткових властивостей
         visitRequest.SetIsRegular(request.IsRegular);
         
         if (!string.IsNullOrEmpty(request.RequiredMedications))
         {
         }
 
-        // Зберігаємо в базу
         _context.VisitRequests.Add(visitRequest);
         await _context.SaveChangesAsync(cancellationToken);
 
