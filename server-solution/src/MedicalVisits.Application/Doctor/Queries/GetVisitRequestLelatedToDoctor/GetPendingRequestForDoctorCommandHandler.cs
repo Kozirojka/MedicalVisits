@@ -37,15 +37,17 @@ public class GetPendingRequestForDoctorCommandHandler : IRequestHandler<GetPendi
                 .Include(p => p.User) 
                 .ThenInclude(u => u.Address) 
                 .FirstOrDefaultAsync(p => p.UserId == vr.PatientId, cancellationToken);
-
+ 
             var patientAddress = patientProfile?.User?.Address;
 
             visitRequestDtos.Add(new VisitRequestDtoNew
             {
+                PatientId = vr.PatientId,
                 Description = vr.Description,
                 DateTime = vr.DateTime,
                 EndDateTime = vr.DateTimeEnd,
-                Address = patientAddress // Додаємо адресу в DTO
+                Address = patientAddress,
+                Status = vr.Status
             });
         }
 
@@ -60,6 +62,7 @@ public class GetPendingRequestForDoctorCommandHandler : IRequestHandler<GetPendi
 
 public class VisitRequestDtoNew
 {
+    public string PatientId { get; set; }
     public string Description { get; set; }
     public DateTime? DateTime { get; set; }
     public DateTime? EndDateTime { get; set; }

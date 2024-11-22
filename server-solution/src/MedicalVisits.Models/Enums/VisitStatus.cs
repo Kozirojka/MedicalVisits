@@ -6,5 +6,13 @@ public enum VisitStatus
     Approved,   // Підтверджено
     Rejected,   // Відхилено
     Completed,  // Завершено
-    Cancelled   // Скасовано
+    Cancelled,   // Скасовано
+    DoctorAccepted
 }
+
+
+
+
+
+
+

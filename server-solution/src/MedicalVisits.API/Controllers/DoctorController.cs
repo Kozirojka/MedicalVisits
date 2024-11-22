@@ -26,8 +26,18 @@ public class DoctorController : BaseController
         return Ok(result);
         
     }
-    
-    
+
+
+    [HttpPost("AssignDoctor")]
+    public async Task<IActionResult> AssignDoctorToVisit()
+    {
+
+            
+
+
+
+        return Ok();
+    }
     
 }
 
