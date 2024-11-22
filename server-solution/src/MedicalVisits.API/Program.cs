@@ -2,7 +2,9 @@ using System.Text;
 using MediatR;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;
+using MedicalVisits.Application.Doctor.Command.GetVisitRequestLelatedToDoctor;
 using MedicalVisits.Infrastructure.Persistence;
+using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +24,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
