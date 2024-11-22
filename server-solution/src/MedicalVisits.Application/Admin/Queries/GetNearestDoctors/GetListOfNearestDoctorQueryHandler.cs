@@ -54,7 +54,6 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
         
         
         
-        //Повертаєм список лікарів, які живуть у цьому місті
         var doctors = await _dbContext.DoctorProfiles
             .Include(d => d.User)
             .Where(d => d.User.Address.Country == request.Address.Country 
@@ -89,7 +88,6 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
             if (doctorCoordinates == null)
                 continue;
 
-            // Розрахунок маршруту
             var distance = await GetDistanceBetweenCoordinates(patientCoordinates, doctorCoordinates);
 
             Console.WriteLine("Дистанція: " + distance);
@@ -160,6 +158,10 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
 
         using var client = new HttpClient();
 
+        
+        
+        //отірбно запам'ятати, про те, щоб потрібно в хедер деколи закидати автентифікацію, та ключ по якому ми
+        //доступаємось до якогось апі
         client.DefaultRequestHeaders.Add("Authorization", apiKey);
 
         var response = await client.PostAsync(

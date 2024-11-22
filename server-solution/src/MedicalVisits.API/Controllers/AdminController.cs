@@ -126,7 +126,6 @@ public class AdminController : BaseController
                 VisitRequestId = dto.VisitId
             };
 
-            // Якщо виникне помилка при відправці команди, вона буде спіймана нижче
             resultOfAttach result = await _Mediator.Send(command);
 
             if (result == null)
@@ -149,9 +148,8 @@ public class AdminController : BaseController
         try
         {
             var command = new CreateADoctorCommand(dto);
-            var result = await _Mediator.Send(command);  // Обов'язково чекайте результат!
+            var result = await _Mediator.Send(command); 
 
-            // Перевірка, чи операція пройшла успішно
             if (!result.Succeeded)
             {
                 return BadRequest(new { error = result.Error });

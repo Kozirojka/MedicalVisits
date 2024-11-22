@@ -15,11 +15,9 @@ public class DoctorProfileConfiguration : IEntityTypeConfiguration<DoctorProfile
             .HasForeignKey<DoctorProfile>(d => d.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Додаткові налаштування полів
         builder.Property(d => d.Specialization)
             .HasMaxLength(100)
             .IsRequired();
             
-        // Інші налаштування...
     }
 }

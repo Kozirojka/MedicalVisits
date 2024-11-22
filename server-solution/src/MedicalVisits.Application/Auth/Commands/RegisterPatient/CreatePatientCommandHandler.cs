@@ -26,7 +26,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
 
     public async Task<AuthResult> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
     {
-        // Перевірка request
         if (request == null || request.DriverRequest == null)
         {
             return new AuthResult
@@ -38,7 +37,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
 
         Console.WriteLine($"-------------{request.DriverRequest.Address.Country}----------------------------");
         
-        // Перевірка полів request
         if (string.IsNullOrWhiteSpace(request.DriverRequest.Email) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.Password) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.FirstName) ||
