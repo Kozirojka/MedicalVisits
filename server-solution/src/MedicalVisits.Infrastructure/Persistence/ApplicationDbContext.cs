@@ -91,7 +91,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Email = "admin@medicalvisits.com",
                 NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
                 EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "Admin123!"),
+                PasswordHash = hasher.HashPassword(null, "Admin123!"), 
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 FirstName = "Admin",

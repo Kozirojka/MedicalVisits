@@ -1,1 +1,89 @@
+# Загальні налаштування для IDE
+.idea/                   # Директорія налаштувань JetBrains Rider
+.vs/                    # Директорія Visual Studio (якщо хтось використовує VS)
+.vscode/                # Директорія VS Code (якщо хтось використовує VS Code)
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
 
+# Файли та директорії .NET Core
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# ASP.NET Core специфічні файли
+*.Development.json      # Локальні налаштування розробки
+appsettings.*.json     # Всі локальні налаштування, крім основного appsettings.json
+!appsettings.json      # Залишаємо основний конфігураційний файл
+
+# React специфічні файли та директорії
+node_modules/          # Залежності npm
+coverage/             # Результати тестів
+build/                # Збірка проекту
+dist/                # Альтернативна директорія збірки (якщо використовується)
+.env                  # Локальні змінні середовища
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Файли npm/yarn логів
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Кеш та тимчасові файли
+.sass-cache/
+.npm/
+.yarn/
+*.swp
+*~
+._*
+.DS_Store              # macOS специфічні файли
+Thumbs.db              # Windows специфічні файли
+desktop.ini
+
+# Rider специфічні файли
+*.sln.iml
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+
+# Файли компіляції TypeScript (якщо використовується)
+*.tsbuildinfo
+*.js.map
+*.css.map
+
+# Тестові результати
+TestResults/
+[Tt]est[Rr]esult*/
+coverage/
+
+# Інші специфічні файли проекту
+*.pfx                  # Сертифікати
+*.publishsettings
+Orleans.GrainDirectory/
+packages/

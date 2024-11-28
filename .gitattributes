@@ -1,0 +1,24 @@
+# Автоматична обробка закінчень рядків для всіх текстових файлів
+* text=auto
+
+# Примусово використовувати LF для певних файлів
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+
+# Бінарні файли не повинні змінюватися
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.pdf binary
