@@ -29,7 +29,6 @@
 
     <ItemGroup>
       <Folder Include="Auth\Queries\" />
-      <Folder Include="Doctor\Queries\" />
       <Folder Include="Patient\Queries\" />
     </ItemGroup>
 
