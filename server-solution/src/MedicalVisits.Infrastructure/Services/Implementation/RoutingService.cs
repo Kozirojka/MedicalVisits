@@ -1,6 +1,11 @@
-﻿namespace MedicalVisits.Infrastructure.Services.Implementation;
+﻿using MedicalVisits.Infrastructure.Services.Interfaces;
 
-public class RoutingService
+namespace MedicalVisits.Infrastructure.Services.Implementation;
+
+public class RoutingService : IRoutingService
 {
-    
+    public async Task CalculatePolyLineHash()
+    {
+        throw new NotImplementedException();
+    }
 }

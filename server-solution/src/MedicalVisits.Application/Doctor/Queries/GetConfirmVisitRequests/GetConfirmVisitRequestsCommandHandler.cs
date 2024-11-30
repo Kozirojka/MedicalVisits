@@ -2,6 +2,7 @@
 using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.Implementation;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
@@ -14,11 +15,11 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
 {
     public ApplicationDbContext _dbContext;
     public UserManager<ApplicationUser> _userManager;
-    public GeocodingService _geocodingService;
+    public IGeocodingService _geocodingService;
     private readonly HttpClient _httpClient;
     
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
-        UserManager<ApplicationUser> userManager, GeocodingService geocodingService, HttpClient httpClient)
+        UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient)
     {
         _dbContext = dbContext;
         _userManager = userManager;
@@ -135,8 +136,8 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         var requestBody = new { coordinates };
         
         
-        
-        string apiUrl = $"https://api.openrouteservice.org/v2/directions/driving-car?api_key={_geocodingService._settings.ApiKey}";
+        //Todo: key set
+        string apiUrl = $"https://api.openrouteservice.org/v2/directions/driving-car?api_key={"futureKey"}";
 
         var response = await _httpClient.PostAsJsonAsync(apiUrl, requestBody);
         var routeData = await response.Content.ReadFromJsonAsync<RouteResponse>();
