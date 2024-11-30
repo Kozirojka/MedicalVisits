@@ -29,10 +29,11 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
+builder.Services.AddScoped<IRoutingService, RoutingService>();
+builder.Services.AddHttpClient();
 
 builder.Services.Configure<OpenRouteServiceSettings>(
     builder.Configuration.GetSection("OpenRouteService"));
-
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -54,7 +55,7 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
-        {
+        {   
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 builder.Configuration["JWT:SecretKey"])),
