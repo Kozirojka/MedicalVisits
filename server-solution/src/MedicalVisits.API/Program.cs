@@ -4,6 +4,9 @@ using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;
 using MedicalVisits.Application.Doctor.Command.GetVisitRequestLelatedToDoctor;
 using MedicalVisits.Infrastructure.Persistence;
+using MedicalVisits.Infrastructure.Services.Implementation;
+using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +28,11 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
+builder.Services.AddScoped<IGeocodingService, GeocodingService>();
+
+builder.Services.Configure<OpenRouteServiceSettings>(
+    builder.Configuration.GetSection("OpenRouteService"));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {

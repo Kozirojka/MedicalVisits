@@ -11,6 +11,7 @@ public class Address
 
     private Address() { } // Для EF Core
 
+    public string GetStreet() => Street;
     public Address(string city, string street, string building, string region, string country, string apartment)
     {
         if (string.IsNullOrWhiteSpace(city)) throw new ArgumentException("City is required");
@@ -29,8 +30,9 @@ public class Address
 
     public override string ToString()
     {
-        var apartmentPart = string.IsNullOrWhiteSpace(Apartment) ? "" : $", Apartment: {Apartment}";
-        return $"{Street}, {Building}{apartmentPart}, {City}, {Region}, {Country}";
+        var location = $"{Street}, {City}, {Region}, {Country}";
+
+        return location;
     }
 
     protected bool Equals(Address other)
