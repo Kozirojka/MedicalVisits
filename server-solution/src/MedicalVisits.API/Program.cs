@@ -4,6 +4,7 @@ using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.RegisterPatient;
 using MedicalVisits.Application.Doctor.Command.GetVisitRequestLelatedToDoctor;
 using MedicalVisits.Infrastructure.Persistence;
+using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Implementation;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Configurations;
@@ -30,10 +31,15 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRoutingService, RoutingService>();
+builder.Services.AddScoped<IGGeocodingService, GGeocodingService>();
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<OpenRouteServiceSettings>(
     builder.Configuration.GetSection("OpenRouteService"));
+
+builder.Services.Configure<GoogleMapsServiceSettings>(
+    builder.Configuration.GetSection("GoogleMaps"));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -75,7 +81,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://localhost:3000")
+            .WithOrigins("http://localhost:3000", "http://localhost:5268")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());

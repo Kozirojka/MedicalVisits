@@ -30,7 +30,7 @@ public class Address
 
     public override string ToString()
     {
-        var location = $"{Street}, {City}, {Region}, {Country}";
+        var location = $"{Street}, {Building},{City}, {Region}, {Country}";
 
         return location;
     }
