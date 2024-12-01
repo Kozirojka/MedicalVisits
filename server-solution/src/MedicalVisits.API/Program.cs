@@ -30,8 +30,8 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
-builder.Services.AddScoped<IRoutingService, RoutingService>();
 builder.Services.AddScoped<IGGeocodingService, GGeocodingService>();
+builder.Services.AddScoped<IRouteOptimizationService, RouteOptimizationService>();
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<OpenRouteServiceSettings>(
