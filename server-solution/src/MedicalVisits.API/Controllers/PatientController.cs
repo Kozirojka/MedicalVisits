@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalVisits.API.Controllers;
 
-
+[Authorize(Roles = "Patient")]
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class PatientController : BaseController
 {
     public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager) : base(mediator, userManager)
     {
     }
-
+    
+    
     [HttpPost("requests")]
     public async Task<IActionResult> CreateAppointment([FromBody] VisitRequestDto visitRequest)
     {

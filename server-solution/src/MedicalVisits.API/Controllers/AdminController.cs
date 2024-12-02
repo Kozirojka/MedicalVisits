@@ -165,12 +165,12 @@ public class AdminController : BaseController
         }
     }
     
-    //витягуєм з бази даних, 10 лікарів, та їх адреса
+    //потрібно поправити, так, щоб передавалась, id пацієнта, і уже на основі цього id запиту буде визначатись адреса 
     [HttpPost("Nearest-Doctor")]
     public async Task<IActionResult> GetListOfNearestDoctors(AddressDto dto)
     {
 
-
+        
         var query = new GetListOfNearestDoctorQuery(dto);
 
         var resultOfquery = await _Mediator.Send(query);
