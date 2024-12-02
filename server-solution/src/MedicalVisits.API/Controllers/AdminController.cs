@@ -166,21 +166,31 @@ public class AdminController : BaseController
     }
     
     //потрібно поправити, так, щоб передавалась, id пацієнта, і уже на основі цього id запиту буде визначатись адреса 
-    [HttpPost("Nearest-Doctor")]
-    public async Task<IActionResult> GetListOfNearestDoctors(AddressDto dto)
+    [HttpGet("Nearest-Doctor/{RequestId}")]  // залишаємо RequestId
+    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int requestId)  // додаємо Name = "RequestId"
     {
-
-        
-        var query = new GetListOfNearestDoctorQuery(dto);
-
-        var resultOfquery = await _Mediator.Send(query);
-
-        if (resultOfquery == null)
+        if (requestId <= 0)  // перевіряємо чи ID більше 0
         {
-            return BadRequest("у тебе великі проблеми є у цьому житті");
+            return BadRequest("Ідентифікатор запиту повинен бути більше 0.");
         }
-        
-        return Ok(resultOfquery);
+
+        try 
+        {
+            var query = new GetListOfNearestDoctorQuery(requestId);
+            var result = await _Mediator.Send(query);  // змінив на camelCase
+
+            if (result == null)
+            {
+                return NotFound($"Не знайдено результатів для запиту з ID: {requestId}");
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // Краще логувати помилку
+            return StatusCode(500, "Сталася помилка при обробці запиту.");
+        }
     }
 }
 

@@ -19,14 +19,21 @@ public class DoctorController : BaseController
     {
     }
 
-    [HttpPost("visits/pending")]
-    public async Task<IActionResult> GetTheListOfRelatedToDoctorPendingVisits(DoctorRequestFilterDto dto)
+    [HttpGet("visits/pending/{doctorId}")]
+    public async Task<IActionResult> GetTheListOfRelatedToDoctorPendingVisits(
+        [FromRoute] string doctorId, 
+        [FromQuery] VisitStatus? status = null)
     {
+        var dto = new DoctorRequestFilterDto 
+        { 
+            Id = doctorId,
+            Status = status
+        };
+
         var getListOfAllVisitsToDoctor = new GetPendingRequestsForDoctorCommand(dto);
         var result = await _Mediator.Send(getListOfAllVisitsToDoctor);
 
         return Ok(result);
-        
     }
 
     
@@ -53,6 +60,7 @@ public class DoctorController : BaseController
      * існує така можливість хешованого маршруту
      */
 
+    //todo: тут зараз має бути використання google service
     [HttpGet("visits/confirmed")]
     public async Task<IActionResult> GetConfirmedVisits( RouteRequestDto requestDto)
     {

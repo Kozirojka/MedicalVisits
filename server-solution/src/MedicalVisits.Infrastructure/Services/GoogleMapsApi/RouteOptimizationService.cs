@@ -1,5 +1,7 @@
-﻿using System.Text;
- using MedicalVisits.Infrastructure.Services.Interfaces;
+﻿using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json.Serialization;
+using MedicalVisits.Infrastructure.Services.Interfaces;
  using MedicalVisits.Models.Configurations;
  using MedicalVisits.Models.diraction;
  using MedicalVisits.Models.diraction.models;
@@ -79,8 +81,70 @@
             throw new Exception($"Route optimization failed: {ex.Message}");
         }
     }
- 
-    
+
+    public async Task<double> GetDistanceBetweenTwoPoints(Coordinate startPoint, Coordinate endPoint)
+    {
+        try
+        {
+            // Формування URL для запиту
+            string url = $"https://routes.googleapis.com/directions/v2:computeRoutes";
+            
+            // Тіло запиту у форматі JSON
+            var requestBody = new
+            {
+                origin = new
+                {
+                    location = new
+                    {
+                        latLng = new
+                        {
+                            latitude = startPoint.Latitude,
+                            longitude = startPoint.Longitude
+                        }
+                    }
+                },
+                destination = new
+                {
+                    location = new
+                    {
+                        latLng = new
+                        {
+                            latitude = endPoint.Latitude,
+                            longitude = endPoint.Longitude
+                        }
+                    }
+                },
+                travelMode = "DRIVE",
+                routingPreference = "TRAFFIC_AWARE",
+                computeAlternativeRoutes = false
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, requestBody);
+            
+            response.EnsureSuccessStatusCode();
+            
+            // Десеріалізуємо відповідь
+            var result = await response.Content.ReadFromJsonAsync<GoogleMapsResponse>();
+            
+            // Перевіряємо чи є маршрути
+            if (result?.Routes == null || !result.Routes.Any())
+            {
+                throw new Exception("Не знайдено маршрутів між вказаними точками");
+            }
+
+            // Повертаємо відстань в кілометрах (конвертуємо з метрів)
+            return result.Routes.First().DistanceMeters / 1000.0;
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"Помилка при запиті до Google Maps API: {ex.Message}", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Помилка при обчисленні відстані: {ex.Message}", ex);
+        }
+    }
+
     private OptimizedRoute ParseRouteResponse(RouteResponse response, 
         Coordinate start,
         List<Coordinate> waypoints)
@@ -106,4 +170,16 @@
             Steps = route.Legs.SelectMany(l => l.Steps.Select(s => s.NavigationInstruction)).ToList()
         };
     }
+ }
+ 
+ // Клас для десеріалізації відповіді
+ public class GoogleMapsResponse
+ {
+     public List<Route> Routes { get; set; }
+ }
+
+ public class Route
+ {
+     [JsonPropertyName("distanceMeters")]
+     public double DistanceMeters { get; set; }
  }

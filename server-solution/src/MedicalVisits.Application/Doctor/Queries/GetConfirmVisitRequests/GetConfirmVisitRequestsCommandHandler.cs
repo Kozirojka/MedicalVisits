@@ -62,44 +62,13 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         CancellationToken cancellationToken)
     {
         
-    
-        //TODO: Функція для пошуку пацієнтів які будуть в день вказаним лікарем
-        //1. Потрібно зараз буде визначити по тим visitRequst, знаходження усіх пацієнтів
-        //2. Тепер по адресам, потрібно звернутись до  OpenStreetMap -> потрібно повернути,адресу всіх корстувачів та їх координати
-        //3. Коли ми визначили їх координати, нам потрібно тепер звернутись до api, щоб воно зробило нам маршрут машино
-        //3.1. І повернула нам RouteResponceDto, у якому буде 
-        //@return = Швидкість за яку проходить автомобіль, хешований шлях маршруту,
-        //точки по яким буде проходити цей маршрут( для того, щоб там поставити іконки
-
-        //TODO: звертати до сервера це не дуже вигідно завжди, особливо якщо це є віддалене api 
-        //тому можна буде придумати якусь штуку, для того, щоб  кешувати
-        //дані, або проходить сокро по табилці в ппошукуах конкретного
-        //адресу, і брати його довготу і широту
         
-        //TODO: потрібно почати з сервісів для розрахунку відстаней, почну з
-        
-        
-        /*var result = await _dbContext.VisitRequests
-            .Where(u => request.RouteRequest.DoctorId.Equals(u.DoctorId)) // Фільтруємо по лікарю
-            .Where(u => u.Status == request.RouteRequest.status) // Фільтруємо по статусу
-            .ToListAsync(cancellationToken);
-        
-       
-        //1. Потрібно вибрати звідси домівки користувачів
-        var addressOfRequests = await _dbContext.PatientProfiles
-            .Select(p => new PatientAddressDto { 
-                Address = p.User.Address,
-                UserId = p.UserId 
-            }).ToListAsync();*/
-        
-        // Отримали запити які є підтверджені
         var visits = await _dbContext.VisitRequests
             .Where(u => request.RouteRequest.DoctorId.Equals(u.DoctorId))
             .Where(u => u.Status == request.RouteRequest.status)
             .Include(v => v.Patient)
             .ToListAsync(cancellationToken);
         
-        //Отримати адреси користувачів які живуть під цими запитами
         var patientAddresses = new List<PatientAddressDto>();
         foreach (var visit in visits)
         {

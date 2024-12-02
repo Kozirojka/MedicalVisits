@@ -3,6 +3,9 @@ using System.Text.Json;
 using MediatR;
 using MedicalVisits.Application.Admin.Queries.GetAllDoctors;
 using MedicalVisits.Infrastructure.Persistence;
+using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
+using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Models.diraction.models;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +16,17 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _dbContext;
-
+    private readonly IGGeocodingService _geocodingService; 
+    private readonly IRouteOptimizationService _routeOptimizationService;
+    
     public GetListOfNearestDoctorQueryHandler(
         UserManager<ApplicationUser> userManager, 
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext, IGGeocodingService geocodingService, IRouteOptimizationService routeOptimizationService)
     {
         _userManager = userManager;
         _dbContext = dbContext;
+        _geocodingService = geocodingService;
+        _routeOptimizationService = routeOptimizationService;
     }
     
     
@@ -31,87 +38,92 @@ public class GetListOfNearestDoctorQueryHandler : IRequestHandler<GetListOfNeare
      */
     public async Task<List<DoctorProfileWithDistance>> Handle(GetListOfNearestDoctorQuery request, CancellationToken cancellationToken)
     {
-        Console.ForegroundColor = ConsoleColor.Red; // Встановлюємо червоний колір тексту
+        Console.ForegroundColor = ConsoleColor.Red;
         Console.OutputEncoding = Encoding.UTF8;
-        // Підготовка адреси пацієнта
-        
-        //Працює 100 процентів, якщо брати вулиці англійською мовою,
-        //щоб найти, наприклад вулицю княгині
-        //ольги потрібно у вулиці ввести 
-        // Kniahyni Olhy Street
-        
-        var patientAddress = $"{request.Address.Street}, {request.Address.City}, {request.Address.State}, {request.Address.Country}";
+        var visitRequest = await _dbContext.VisitRequests
+            .Include(v => v.Patient) // Завантаження пов'язаного пацієнта
+            .ThenInclude(p => p.Address) // Завантаження адреси пацієнта (якщо потрібно)
+            .FirstOrDefaultAsync(v => v.Id ==  request.requestId, cancellationToken);
 
-        //Console.WriteLine($"{patientAddress} patient adresses");
-        
-        var patientCoordinates = await GetCoordinatesFromAddress(patientAddress);
 
+        if (visitRequest == null)
+        {
+            Console.WriteLine("-----------------No Visit Request------------------------------------------------------");
+        }
+        else
+        {
+            Console.WriteLine(visitRequest.Description + "------------------------------");
+        }
+        // Отримати пацієнта
+        var patientId = visitRequest.PatientId;
+        var patient = await _userManager.FindByIdAsync(patientId);
+        
+        var patientAddress = patient?.Address;
+        
+        
+         
+        var patientCoordinates = await _geocodingService.GeocodeAddressAsync(patientAddress);
+
+        
         
         
             //Console.WriteLine($"Coordinates: {patientCoordinates[0]} + {patientCoordinates[1]} -------------------------------");
-        if (patientCoordinates == null)
-            throw new Exception("Do not can find the coodicnate if user");
+        if (patientCoordinates.Latitude == 0 && patientCoordinates.Longitude == 0)
+            throw new Exception("Do not can find the coordinate if user");
         
         
         
         var doctors = await _dbContext.DoctorProfiles
             .Include(d => d.User)
-            .Where(d => d.User.Address.Country == request.Address.Country 
-                        && d.User.Address.City == request.Address.City)
-            .ToListAsync();
+            .Where(d => d.User.Address.Country == patientAddress.Country 
+                        && d.User.Address.City == patientAddress.City)
+            .ToListAsync(cancellationToken: cancellationToken);
 
 
-        //foreach (var doctor in doctors)
-         //   Console.WriteLine(doctor.User.FirstName);
-        
         
         if (doctors == null)
         {
             throw new Exception("Не знайдено лікарів");
         }
         
-        //Тепер потрібно визначити який лікар живе найближче
         var doctorDistances = new List<DoctorProfileWithDistance>();
         
         foreach (var doctor in doctors)
         {
             int i = 0; 
             
-            var doctorAddress = $"{doctor.User.Address.Street}, {doctor.User.Address.City}, {doctor.User.Address.Region}, {doctor.User.Address.Country}";
-            var doctorCoordinates = await GetCoordinatesFromAddress(doctorAddress);
+            var doctorCoordinates = await _geocodingService.GeocodeAddressAsync(doctor.User.Address);
 
-
-           // Console.WriteLine($"{doctorAddress}, {doctorCoordinates}");
-           // Console.WriteLine($"{doctorCoordinates[0]} +++++++{doctorCoordinates[1]}");
             
-            
-            if (doctorCoordinates == null)
+            if (doctorCoordinates.Longitude == 0 && doctorCoordinates.Latitude == 0)
                 continue;
 
-            var distance = await GetDistanceBetweenCoordinates(patientCoordinates, doctorCoordinates);
+            var distance = _routeOptimizationService.GetDistanceBetweenTwoPoints(new Coordinate()
+            {
+                Latitude = patientCoordinates.Latitude,
+                Longitude = patientCoordinates.Longitude
+                
+            }, new Coordinate()
+            {
+                Latitude = doctorCoordinates.Latitude,
+                Longitude = doctorCoordinates.Longitude
+            });
 
             Console.WriteLine("Дистанція: " + distance);
             
-            if (distance != null)
+            if (distance.Result != null)
             {
                 doctorDistances.Add(new DoctorProfileWithDistance
                 {
                     Doctor = doctor,
-                    Distance = distance.Value
+                    Distance = distance.Result
                 });
             }
 
             i++;
         }
         
-        // Сортування за відстанню
         return doctorDistances.OrderBy(d => d.Distance).ToList();
-        
-        //Тепер мені потрібно  створити запит який буде визначати який лікар живе найближче до
-        //пацієнта, є декілька варіантів, перший це є за одни запит визначити,
-        //а потім порівняти
-        //Другий варіант це є за декілька зпитів визначити та порівняти
-        
         
     }
     public class DoctorProfileWithDistance
