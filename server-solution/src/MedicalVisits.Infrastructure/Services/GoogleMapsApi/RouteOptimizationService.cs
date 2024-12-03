@@ -73,6 +73,7 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
                 throw new Exception($"API Error: {responseContent}");
             }
  
+            //todo: зробити можливість серелізації даних і зробити так, щоб воно могло класно повернутись
             var routeResponse = JsonConvert.DeserializeObject<RouteResponse>(responseContent);
             return ParseRouteResponse(routeResponse, start, waypoints);
         }

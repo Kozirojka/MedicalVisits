@@ -1,9 +1,8 @@
 ﻿using System.Net.Http.Json;
 using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
-using MedicalVisits.Infrastructure.Services.Implementation;
 using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Models;
+using MedicalVisits.Models.diraction.models;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -15,16 +14,17 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
 {
     public ApplicationDbContext _dbContext;
     public UserManager<ApplicationUser> _userManager;
-    public IGeocodingService _geocodingService;
+    public IGGeocodingService _geocodingService;
     private readonly HttpClient _httpClient;
-    
+    private readonly IRouteOptimizationService _routeOptimizationService;
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
-        UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient)
+        UserManager<ApplicationUser> userManager, IGGeocodingService geocodingService, HttpClient httpClient, IRouteOptimizationService routeOptimizationService)
     {
         _dbContext = dbContext;
         _userManager = userManager;
         _geocodingService = geocodingService;
         _httpClient = httpClient;
+        _routeOptimizationService = routeOptimizationService;
     }
 
 
@@ -63,11 +63,20 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
     {
         
         
+        //todo: в майбутньому потрібно завести можливість пошуку за графіком
         var visits = await _dbContext.VisitRequests
-            .Where(u => request.RouteRequest.DoctorId.Equals(u.DoctorId))
-            .Where(u => u.Status == request.RouteRequest.status)
+            .Where(u => request.DoctorId == u.DoctorId)
+            .Where(u => u.Status == request.status)
             .Include(v => v.Patient)
             .ToListAsync(cancellationToken);
+        
+        if (!visits.Any())
+        {
+            return new RouteResponse(); // або null, залежно від вашої логіки
+        }
+        
+        List<Coordinate> waypoints = new List<Coordinate>();
+
         
         var patientAddresses = new List<PatientAddressDto>();
         foreach (var visit in visits)
@@ -83,44 +92,36 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
             }
         }
 
-        //назначити для кожного користувача зі списку свій адрес де вони проживають
         foreach (var patient in patientAddresses)
         {   
             //2.
             //Отримуєм точки користувача
-            var point = await _geocodingService.GetCoordinatesFromAddress(patient.Address);
+            var point = await _geocodingService.GeocodeAddressAsync(patient.Address);
             
             
-            //ВСтавляєм точки проживання в наше dto
-            patient.Latitude = point[1];
-            patient.Longitude = point[0];
+            waypoints.Add(new Coordinate
+            {
+                Latitude = point.Latitude,
+                Longitude = point.Longitude
+            });
             
+            //Doing:
+            patient.Latitude = point.Latitude;
+            patient.Longitude = point.Longitude;
         }
         
-        //тепер patientAddresses це є список, у якому є id пацієнта,адреси користувачів, широта та довгота
-        //тепер настав час виконувати третій пункт 
-        //TODO: не відомо як зберігати порядок користувачів  в сервісі
-        var coordinates = patientAddresses.Select(p => new[] { p.Longitude, p.Latitude }).ToList();
-
-        var requestBody = new { coordinates };
+        var Doctor = await _userManager.FindByIdAsync(request.DoctorId);
         
+        //todo: зробити так, щоб в програмі використвоувався один стиль координат клас "Coordinate"
+        var startPointOfDoctor = await _geocodingService.GeocodeAddressAsync(Doctor.Address);
         
-        //Todo: key set
-        string apiUrl = $"https://api.openrouteservice.org/v2/directions/driving-car?api_key={"futureKey"}";
-
-        var response = await _httpClient.PostAsJsonAsync(apiUrl, requestBody);
-        var routeData = await response.Content.ReadFromJsonAsync<RouteResponse>();
-
-        Console.WriteLine(routeData);
+        var resultOfOptimized = await _routeOptimizationService.GetOptimizedRouteAsync(new Coordinate()
+        {
+            Latitude = startPointOfDoctor.Latitude,
+            Longitude = startPointOfDoctor.Longitude
+        }, waypoints);
+                
         
-        
-        // var coordinateToPatient = new Dictionary<string, PatientAddressDto>();
-        // foreach (var coord in coordinates.Split('|'))
-        // {
-        //     var patient = AddressOfRequests.First(p => 
-        //         $"{p.Longitude},{p.Latitude}" == coord);
-        //     coordinateToPatient[coord] = patient;
-        // }
         return null;
     }
     

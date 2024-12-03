@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 using MedicalVisits.Application.Doctor.Command.GetVisitRequestLelatedToDoctor;
@@ -54,19 +55,17 @@ public class DoctorController : BaseController
         return Ok(result);
     }
     
-    /*
-     * TODO: створити фукнцію, яка буде  брати з бази даних Усі прийоми Лікаря,
-     * буде відображати шляхи до цих прйомів які будуть оєднані  в одинх шлях
-     * існує така можливість хешованого маршруту
-     */
+    
 
-    //todo: тут зараз має бути використання google service
+    //todo: Зроби безпечнішу функцію
     [HttpGet("visits/confirmed")]
-    public async Task<IActionResult> GetConfirmedVisits( RouteRequestDto requestDto)
+    public async Task<IActionResult> GetConfirmedVisits()
     {
-        var command = new GetConfirmVisitRequestsCommand(requestDto);
+        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        var command = new GetConfirmVisitRequestsCommand(doctorId);
 
-        var result =  _Mediator.Send(command);
+        var result =  await  _Mediator.Send(command);
         
         return Ok(result);
     }
