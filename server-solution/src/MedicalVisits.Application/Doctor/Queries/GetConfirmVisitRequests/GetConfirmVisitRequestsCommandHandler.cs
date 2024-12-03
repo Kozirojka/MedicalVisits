@@ -15,50 +15,17 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
 {
     public ApplicationDbContext _dbContext;
     public UserManager<ApplicationUser> _userManager;
-    public IGGeocodingService _geocodingService;
-    private readonly HttpClient _httpClient;
-    private readonly IRouteOptimizationService _routeOptimizationService;
+    public IGeocodingService _geocodingService;
+    private readonly IRouteService _routeService;
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
-        UserManager<ApplicationUser> userManager, IGGeocodingService geocodingService, HttpClient httpClient, IRouteOptimizationService routeOptimizationService)
+        UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient, IRouteService routeService)
     {
         _dbContext = dbContext;
         _userManager = userManager;
         _geocodingService = geocodingService;
-        _httpClient = httpClient;
-        _routeOptimizationService = routeOptimizationService;
+        _routeService = routeService;
     }
-
-
-    /*
-     * Завдання середньої складності. Основні компоненти:
-        База даних:
-        Вибірка visitRequests з JOIN пацієнтів
-        Фільтрація по даті та лікарю
-
-
-        Geocoding:
-        Інтеграція з Nominatim API
-        Конвертація адрес в координати
-        Обробка помилок та лімітів API
-
-
-        Routing:
-        Інтеграція з OSRM API
-        Оптимізація маршруту
-        Кодування polyline для фронтенду
-
-        Основні виклики:
-        Rate limiting API
-        Кешування результатів геокодингу
-        Обробка неточних адрес
-        Оптимізація маршруту для великої кількості точок
-
-        Рекомендую розбити на окремі сервіси:
-
-        VisitService
-        GeocodingService
-        RoutingService
-     */
+    
     public async Task<RouteResponse> Handle(GetConfirmVisitRequestsCommand request,
         CancellationToken cancellationToken)
     {
@@ -67,7 +34,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         //todo: в майбутньому потрібно завести можливість пошуку за графіком
         var visits = await _dbContext.VisitRequests
             .Where(u => request.DoctorId == u.DoctorId)
-            .Where(u => u.Status == request.status)
+            .Where(u => u.Status == request.Status)
             .Include(v => v.Patient)
             .ToListAsync(cancellationToken);
         
@@ -95,10 +62,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
 
         foreach (var patient in patientAddresses)
         {   
-            //2.
-            //Отримуєм точки користувача
             var point = await _geocodingService.GeocodeAddressAsync(patient.Address);
-            
             
             waypoints.Add(new Coordinate
             {
@@ -106,7 +70,6 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
                 Longitude = point.Longitude
             });
             
-            //Doing:
             patient.Latitude = point.Latitude;
             patient.Longitude = point.Longitude;
         }
@@ -116,7 +79,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         //todo: зробити так, щоб в програмі використвоувався один стиль координат клас "Coordinate"
         var startPointOfDoctor = await _geocodingService.GeocodeAddressAsync(Doctor.Address);
         
-        var resultOfOptimized = await _routeOptimizationService.GetOptimizedRouteAsync(new Coordinate()
+        var resultOfOptimized = await _routeService.GetOptimizedRouteAsync(new Coordinate()
         {
             Latitude = startPointOfDoctor.Latitude,
             Longitude = startPointOfDoctor.Longitude

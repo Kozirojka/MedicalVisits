@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MedicalVisits.Models.Dtos;
+using MedicalVisits.Models.Dtos.AuthDto;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

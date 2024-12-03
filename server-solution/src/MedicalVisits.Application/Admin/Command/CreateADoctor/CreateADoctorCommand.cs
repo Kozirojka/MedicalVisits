@@ -1,6 +1,7 @@
 ﻿using MediatR;
-using MedicalVisits.Application.Auth.Commands.RegisterPatient;
+using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Models;
+using MedicalVisits.Models.Entities;
 
 namespace MedicalVisits.Application.Admin.Command.CreateADoctor;
 

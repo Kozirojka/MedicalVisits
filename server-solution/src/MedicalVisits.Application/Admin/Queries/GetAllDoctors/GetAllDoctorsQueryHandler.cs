@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalVisits.Application.Admin.Queries.GetAllDoctors;
 
-public class GetAllDoctorsQueryHandler : IRequestHandler<GetDoctorsQuery, List<DoctorDto>>
+public class GetAllDoctorsQueryHandler : IRequestHandler<GetAllDoctorsQuery, List<DoctorDto>>
 {
     
     private readonly UserManager<ApplicationUser> _userManager;
@@ -22,7 +22,7 @@ public class GetAllDoctorsQueryHandler : IRequestHandler<GetDoctorsQuery, List<D
     }
     
     
-    public async Task<List<DoctorDto>> Handle(GetDoctorsQuery request, CancellationToken cancellationToken)
+    public async Task<List<DoctorDto>> Handle(GetAllDoctorsQuery request, CancellationToken cancellationToken)
     {
         
         var patients = await _dbContext.DoctorProfiles

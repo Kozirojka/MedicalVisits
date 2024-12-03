@@ -1,7 +1,7 @@
 ﻿using MediatR;
+using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Auth.Commands.GenerateRefreshToken;
-using MedicalVisits.Application.Auth.Commands.RegisterPatient;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;

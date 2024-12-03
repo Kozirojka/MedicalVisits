@@ -1,14 +1,12 @@
 using System.Text;
 using MediatR;
+using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
-using MedicalVisits.Application.Auth.Commands.RegisterPatient;
-using MedicalVisits.Application.Doctor.Command.GetVisitRequestLelatedToDoctor;
+using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
-using MedicalVisits.Infrastructure.Services.Implementation;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Configurations;
-using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -30,12 +28,9 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
-builder.Services.AddScoped<IGGeocodingService, GGeocodingService>();
-builder.Services.AddScoped<IRouteOptimizationService, RouteOptimizationService>();
+builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddHttpClient();
 
-builder.Services.Configure<OpenRouteServiceSettings>(
-    builder.Configuration.GetSection("OpenRouteService"));
 
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));

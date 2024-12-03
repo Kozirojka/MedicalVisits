@@ -3,6 +3,7 @@ using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models;
 using MedicalVisits.Models.Configurations;
+using MedicalVisits.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -13,12 +14,12 @@ namespace Test;
 public class GoogleApiTest
 {
     [TestFixture]
-    public class GGeocodingServiceTests
+    public class GeocodingServiceTests
     {
         private Mock<HttpMessageHandler> _mockHttpMessageHandler;
         private HttpClient _httpClient;
         private Mock<IOptions<GoogleMapsServiceSettings>> _mockSettings;
-        private GGeocodingService _service;
+        private GeocodingService _service;
         private const string TestApiKey = "test-api-key";
 
         [SetUp]
@@ -30,7 +31,7 @@ public class GoogleApiTest
             _mockSettings = new Mock<IOptions<GoogleMapsServiceSettings>>();
             _mockSettings.Setup(x => x.Value).Returns(new GoogleMapsServiceSettings { ApiKey = TestApiKey });
 
-            _service = new GGeocodingService(_httpClient, _mockSettings.Object);
+            _service = new GeocodingService(_httpClient, _mockSettings.Object);
         }
         [TearDown]
         public void TearDown()
