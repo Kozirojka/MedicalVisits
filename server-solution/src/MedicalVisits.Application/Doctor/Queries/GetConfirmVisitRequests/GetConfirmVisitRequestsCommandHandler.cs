@@ -7,6 +7,7 @@ using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RouteResponse = MedicalVisits.Models.diraction.RouteResponse;
 
 namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
@@ -122,7 +123,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         }, waypoints);
                 
         
-        return null;
+        return resultOfOptimized;
     }
     
    

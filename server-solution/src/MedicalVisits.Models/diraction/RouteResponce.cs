@@ -8,17 +8,11 @@ public class RouteResponse
 public class Route
 {
     public int DistanceMeters { get; set; }
-    public int Duration { get; set; }
-    public List<int> OptimizedIntermediateWaypointIndex { get; set; }
-    public List<RouteLeg> Legs { get; set; }
+    public string Duration { get; set; }
+    public Polyline Polyline { get; set; }
 }
 
-public class RouteLeg
+public class Polyline
 {
-    public List<RouteStep> Steps { get; set; }
-}
-
-public class RouteStep
-{
-    public string NavigationInstruction { get; set; }
+    public string EncodedPolyline { get; set; }
 }

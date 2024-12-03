@@ -4,7 +4,7 @@ using MedicalVisits.Models.Enums;
 
 namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
-public class GetConfirmVisitRequestsCommand : IRequest<RouteResponse>
+public class GetConfirmVisitRequestsCommand : IRequest<MedicalVisits.Models.diraction.RouteResponse>
 {
     public GetConfirmVisitRequestsCommand(string doctorId)
     {
