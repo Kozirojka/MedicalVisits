@@ -4,6 +4,7 @@ using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Infrastructure.Persistence;
+using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Configurations;
@@ -29,6 +30,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 builder.Services.AddHttpClient();
 
 

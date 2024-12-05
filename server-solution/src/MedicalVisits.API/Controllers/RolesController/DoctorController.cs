@@ -4,7 +4,9 @@ using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 using MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
+using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Models.Dtos;
+using MedicalVisits.Models.Dtos.DoctorDto;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -13,11 +15,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalVisits.API.Controllers.RolesController;
 
+
+[ApiController]
 [Authorize(Roles = "Doctor")]
+[Route("api/[controller]")]
 public class DoctorController : BaseController
 {
-    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager) : base(mediator, userManager)
+    private readonly IDoctorScheduleService _scheduleService;
+    
+    
+    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, IDoctorScheduleService scheduleService) : base(mediator, userManager)
     {
+        _scheduleService = scheduleService;
     }
 
     [HttpGet("visits/pending")]
@@ -72,7 +81,65 @@ public class DoctorController : BaseController
         
         return Ok(result);
     }
+
+
+    [HttpPost("set-schedule")]
+    public async Task<IActionResult> SetSchedule(DoctorScheduleRequestDto request)
+    {
+        try
+        {
+            var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (doctorId == null)
+                return Unauthorized();
+
+            request.DoctorId = doctorId;
+
+            var schedule = await _scheduleService.SetDoctorSchedule(request);
+            
+            return Ok(new { 
+                message = "Schedule set successfully",
+                scheduleId = schedule.Id,
+                totalSlots = schedule.TimeSlots.Count
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while setting the schedule");
+        }
+    }
     
+    [HttpPost("assign")]
+    public async Task<IActionResult> AssignVisitToTimeSlot(AssignVisitRequest request)
+    {
+        try
+        {
+            await _scheduleService.AssignVisitToDoctorSlot(
+                request.VisitRequestId, 
+                request.TimeSlotId);
+
+            return Ok(new { 
+                message = "Visit successfully assigned to time slot",
+                visitRequestId = request.VisitRequestId,
+                timeSlotId = request.TimeSlotId
+            });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while assigning the visit");
+        }
+    }
 }
 
 
