@@ -24,8 +24,8 @@ public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPend
     public async Task<List<VisitRequestDtoNew>> Handle(GetPendingRequestsForDoctorCommand request, CancellationToken cancellationToken)
     {
         var result = await _dbContext.VisitRequests
-            .Where(u => request.Doctor.Id.Equals(u.DoctorId)) // Фільтруємо по лікарю
-            .Where(u => u.Status == request.Doctor.Status)   // Фільтруємо по статусу
+            .Where(u => request.Doctor.Id.Equals(u.DoctorId)) 
+            .Where(u => u.Status == request.Doctor.Status)   
             .ToListAsync(cancellationToken);
 
         var visitRequestDtos = new List<VisitRequestDtoNew>();

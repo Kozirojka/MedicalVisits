@@ -20,15 +20,17 @@ public class DoctorController : BaseController
     {
     }
 
-    [HttpGet("visits/pending/{doctorId}")]
+    [HttpGet("visits/pending")]
     public async Task<IActionResult> GetTheListOfRelatedToDoctorPendingVisits(
-        [FromRoute] string doctorId, 
         [FromQuery] VisitStatus? status = null)
     {
+        
+        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
         var dto = new DoctorRequestFilterDto 
         { 
             Id = doctorId,
-            Status = status
+            Status = VisitStatus.Approved
         };
 
         var getListOfAllVisitsToDoctor = new GetPendingRequestsForDoctorCommand(dto);
@@ -50,9 +52,9 @@ public class DoctorController : BaseController
 
         var command = new AssignDoctorToVisitCommand(visitId, doctorId);
 
-        var result = _Mediator.Send(command);
+        var result = await _Mediator.Send(command);
 
-
+        
         return Ok(result);
     }
     
