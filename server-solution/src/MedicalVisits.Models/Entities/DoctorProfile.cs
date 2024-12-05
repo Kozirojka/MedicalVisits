@@ -1,4 +1,5 @@
-﻿namespace MedicalVisits.Models.Entities;
+﻿
+namespace MedicalVisits.Models.Entities;
 
 public class DoctorProfile
 {
@@ -8,6 +9,13 @@ public class DoctorProfile
     public string Specialization { get; set; }
     public string LicenseNumber { get; set; }
     
-    public ICollection<WorkSchedule>? WorkSchedules { get; set; }
+    
     public ICollection<VisitRequest>? visitRequests { get; set; }
+    
+    public DoctorProfile() 
+    {
+        visitRequests = new List<VisitRequest>();
+    }
+
+    
 }

@@ -34,8 +34,6 @@ public class VisitRequest
     public bool HasMedicine { get; private set; }
     public VisitStatus Status { get; set; }
     public ICollection<WorkSchedule> WorkSchedules { get; set; }
-    
-    
    
     public static VisitRequest Create(string patientId, DateTime dateTime, string description, string address)
     {

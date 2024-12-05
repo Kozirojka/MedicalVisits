@@ -21,6 +21,10 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Entities\Schedule\" />
+    </ItemGroup>
+
 
 
 

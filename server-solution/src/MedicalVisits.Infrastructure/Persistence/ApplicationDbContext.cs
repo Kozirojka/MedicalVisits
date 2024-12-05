@@ -30,17 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-     
-        builder.Entity<WorkSchedule>()
-            .HasOne(ws => ws.Doctor)
-            .WithMany(d => d.WorkSchedules)
-            .HasForeignKey(ws => ws.DoctorProfileId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<WorkSchedule>()
-            .HasIndex(ws => new { ws.DoctorProfileId, ws.DayOfWeek })
-            .IsUnique();
+        
         
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new VisitRequestConfiguration());
