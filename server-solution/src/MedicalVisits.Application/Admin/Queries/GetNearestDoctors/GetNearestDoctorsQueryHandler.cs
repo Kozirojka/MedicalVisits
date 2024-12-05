@@ -115,7 +115,10 @@ public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQu
             {
                 doctorDistances.Add(new DoctorProfileWithDistance
                 {
-                    Doctor = doctor,
+                    DoctorId = doctor.UserId,
+                    FirstName = doctor.User.FirstName,
+                    LastName = doctor.User.LastName,
+                    Specialization = doctor.Specialization,
                     Distance = distance.Result
                 });
             }
@@ -128,7 +131,10 @@ public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQu
     }
     public class DoctorProfileWithDistance
     {
-        public DoctorProfile Doctor { get; set; }
         public double Distance { get; set; } 
+        public string DoctorId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Specialization { get; set; } 
     }
 }

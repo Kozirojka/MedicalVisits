@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using MediatR;
 using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Patient.Command;
@@ -21,7 +22,7 @@ public class PatientController : BaseController
     }
     
     
-    [HttpPost("requests")]
+    [HttpPost("request")]
     public async Task<IActionResult> CreateAppointment([FromBody] VisitRequestDto visitRequest)
     {
         var patientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -30,6 +31,10 @@ public class PatientController : BaseController
 
         try
         {
+            
+            // Додаємо логування
+            Console.WriteLine($"Отримано запит на створення візиту: {JsonSerializer.Serialize(visitRequest)}");
+
             var command = new CreateVisitRequestCommand(visitRequest, patientId);
             var result = await _Mediator.Send(command);
 

@@ -17,5 +17,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             address.Property(a => a.Region).HasMaxLength(100).IsRequired();
             address.Property(a => a.Country).HasMaxLength(100).IsRequired();
         });
+        
+      
     }
 }
