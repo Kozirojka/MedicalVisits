@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,21 @@ builder.Services.AddHttpClient();
 
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    // Налаштовуємо фільтри для різних просторів імен
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)     // Зменшуємо загальні системні логи
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  // Прибираємо логи EF Core
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)  // Зменшуємо логи ASP.NET Core
+    .WriteTo.Console()  // Все ще логуємо в консоль для розробки
+    .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -126,6 +143,10 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
+
+Log.Information("Application si srunnign!");
+
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

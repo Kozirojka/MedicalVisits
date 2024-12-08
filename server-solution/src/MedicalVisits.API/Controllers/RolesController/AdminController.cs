@@ -19,18 +19,22 @@ namespace MedicalVisits.API.Controllers.RolesController;
 [ApiController]
 public class AdminController : BaseController
 {
-    public AdminController(IMediator mediator, UserManager<ApplicationUser> userManager) 
+    private readonly ILogger<AdminController> _logger;
+    
+    public AdminController(IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<AdminController> logger) 
         : base(mediator, userManager)
     {
+        _logger = logger;
     }
 
     
     [HttpGet("Users")]
     public async Task<IActionResult> GetAllUsers()
     {
-        
+ 
         try 
         {
+            _logger.LogInformation("Its function for get user");
             var command = new GetAllUsersQuery();
             var result = await _Mediator.Send(command);
 

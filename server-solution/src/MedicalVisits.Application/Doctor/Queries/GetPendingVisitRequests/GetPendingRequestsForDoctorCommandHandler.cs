@@ -41,6 +41,7 @@ public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPend
 
             visitRequestDtos.Add(new VisitRequestDtoNew
             {
+                Id = vr.Id,
                 PatientId = vr.PatientId,
                 Description = vr.Description,
                 DateTime = vr.DateTime,
@@ -65,7 +66,7 @@ public class VisitRequestDtoNew
     public string Description { get; set; }
     public DateTime? DateTime { get; set; }
     public DateTime? EndDateTime { get; set; }
-    
+    public int Id { get; set; }
     public Address Address { get; set; }
     
     public VisitStatus Status { get; set; }

@@ -9,8 +9,7 @@ public class GetPendingRequestsForDoctorCommand : IRequest<List<VisitRequestDtoN
     {
         Doctor = doctor;
     }
-
-
+    
     public DoctorRequestFilterDto Doctor { get; set; }
     
 }

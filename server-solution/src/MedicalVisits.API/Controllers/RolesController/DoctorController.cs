@@ -4,6 +4,7 @@ using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 using MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
+using MedicalVisits.Application.Doctor.Queries.GetTimeSlotFor5Days;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Dtos.DoctorDto;
@@ -44,7 +45,8 @@ public class DoctorController : BaseController
 
         var getListOfAllVisitsToDoctor = new GetPendingRequestsForDoctorCommand(dto);
         var result = await _Mediator.Send(getListOfAllVisitsToDoctor);
-
+        
+        
         return Ok(result);
     }
 
@@ -96,7 +98,7 @@ public class DoctorController : BaseController
 
             var schedule = await _scheduleService.SetDoctorSchedule(request);
             
-            return Ok(new { 
+            return Ok(new {     
                 message = "Schedule set successfully",
                 scheduleId = schedule.Id,
                 totalSlots = schedule.TimeSlots.Count
@@ -112,7 +114,7 @@ public class DoctorController : BaseController
         }
     }
     
-    [HttpPost("assign")]
+    [HttpPost("assign-visit")]
     public async Task<IActionResult> AssignVisitToTimeSlot(AssignVisitRequest request)
     {
         try
@@ -140,6 +142,32 @@ public class DoctorController : BaseController
             return StatusCode(500, "An error occurred while assigning the visit");
         }
     }
+    
+    [HttpGet("schedule/slots")]
+    public async Task<IActionResult> GetTimeSlots([FromQuery] DateTime startDate)
+    {
+        try
+        {
+            Console.WriteLine("NOW WEEEE IN  CONTROLLLERRRw");
+            var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (doctorId == null)
+                return Unauthorized();
+
+            var query = new GetDoctorTimeSlotsQuery
+            {
+                DoctorId = doctorId,
+                StartDate = startDate.Date // Беремо тільки дату, без часу
+            };
+
+            var slots = await _Mediator.Send(query);
+            
+            return Ok(slots);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Error fetching time slots");
+        }
+    }    
 }
 
 

@@ -26,24 +26,19 @@ public class GeocodingService : IGeocodingService
 
         try
         {
-            // Запит до Google Geocoding API
             var response = await _httpClient.GetAsync(url);
         
-            // Перевірка на успішний статус запиту
             response.EnsureSuccessStatusCode();
 
-            // Зчитуємо відповідь
             var json = await response.Content.ReadAsStringAsync();
             var data = JObject.Parse(json);
 
-            // Перевірка на статус API
             if (data["status"]?.ToString() != "OK")
             {
                 var errorMessage = data["status"]?.ToString() ?? "Unknown error";
                 throw new Exception($"Geocoding API error: {errorMessage}");
             }
 
-            // Отримуємо координати
             var location = data["results"]?[0]?["geometry"]?["location"];
             if (location == null)
                 throw new Exception("Address not found");
@@ -55,12 +50,10 @@ public class GeocodingService : IGeocodingService
         }
         catch (HttpRequestException ex)
         {
-            // Помилка при підключенні до сервера
             throw new Exception("Error connecting to Geocoding API: " + ex.Message);
         }
         catch (Exception ex)
         {
-            // Ловимо інші помилки
             throw new Exception("An error occurred: " + ex.Message);
         }
     }
