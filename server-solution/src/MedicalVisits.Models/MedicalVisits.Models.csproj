@@ -23,6 +23,11 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Dtos\Schedule\" />
+      <Folder Include="Entities\Schedule\" />
+    </ItemGroup>
+
 
 
 

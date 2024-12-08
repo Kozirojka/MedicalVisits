@@ -1,6 +1,5 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
 using MedicalVisits.Models.Entities;
-using MedicalVisits.Models.Entities.Schedule;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +16,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<VisitRequest> VisitRequests { get; set; }
-    public DbSet<DoctorWorkSchedule> DoctorWorkSchedules { get; set; }
-    public DbSet<TimeSlot> TimeSlots { get; set; }
     public DbSet<PatientProfile> PatientProfiles { get; set; }
     public DbSet<DoctorProfile> DoctorProfiles { get; set; }
-    public DbSet<WorkSchedule> WorkSchedules { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,40 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<DoctorProfile>()
-            .HasOne(dp => dp.User)
-            .WithOne()
-            .HasForeignKey<DoctorProfile>(dp => dp.UserId);
-
-        builder.Entity<DoctorWorkSchedule>()
-            .HasOne(ws => ws.Doctor)
-            .WithMany(d => d.WorkSchedules)
-            .HasForeignKey(ws => ws.DoctorId)
-            .HasPrincipalKey(d => d.UserId) 
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<TimeSlot>()
-            .HasOne(ts => ts.Schedule)
-            .WithMany(ws => ws.TimeSlots)
-            .HasForeignKey(ts => ts.ScheduleId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<TimeSlot>()
-            .HasOne(ts => ts.AssignedVisit)
-            .WithOne(v => v.TimeSlot)
-            .HasForeignKey<VisitRequest>(v => v.TimeSlotId);
-
-        builder.Entity<VisitRequest>()
-            .HasOne(vr => vr.Patient)
-            .WithMany()
-            .HasForeignKey(vr => vr.PatientId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<VisitRequest>()
-            .HasOne(vr => vr.Doctor)
-            .WithMany()
-            .HasForeignKey(vr => vr.DoctorId)
-            .OnDelete(DeleteBehavior.Restrict);
+        
         
         // builder.ApplyConfiguration(new DoctorWorkScheduleConfiguration());
         // builder.ApplyConfiguration(new TimeSlotConfiguration());

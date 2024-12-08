@@ -32,7 +32,6 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
-builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 builder.Services.AddHttpClient();
 
 
@@ -42,9 +41,9 @@ builder.Services.Configure<GoogleMapsServiceSettings>(
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     // Налаштовуємо фільтри для різних просторів імен
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)     // Зменшуємо загальні системні логи
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  // Прибираємо логи EF Core
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)  // Зменшуємо логи ASP.NET Core
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
     .WriteTo.Console()  // Все ще логуємо в консоль для розробки
     .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
     .Enrich.FromLogContext()
