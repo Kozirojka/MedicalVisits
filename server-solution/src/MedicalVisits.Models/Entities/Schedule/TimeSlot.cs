@@ -14,7 +14,10 @@ public class TimeSlot
     public TimeSlotStatus Status { get; set; }
     
     public VisitRequest AssignedVisit { get; private set; }
-
+    public int? VisitRequestId { get; set; }
+    
+    
+    
     protected TimeSlot() { }
 
     public static TimeSlot Create(

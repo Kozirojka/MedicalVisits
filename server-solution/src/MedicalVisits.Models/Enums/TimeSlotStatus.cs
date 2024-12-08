@@ -4,5 +4,5 @@ public enum TimeSlotStatus
 {
     Available,
     Booked,
-    Blocked
+    Cancelled
 }

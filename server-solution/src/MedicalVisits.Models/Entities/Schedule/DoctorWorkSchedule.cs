@@ -4,7 +4,7 @@ public class DoctorWorkSchedule
 {
     public int Id { get; set; }
     public string DoctorId { get; private set; }
-    public ApplicationUser Doctor { get; set; }
+    public DoctorProfile Doctor { get; set; }
     
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
@@ -18,7 +18,7 @@ public class DoctorWorkSchedule
     {
         TimeSlots = new List<TimeSlot>();
     }
-    
+        
     public static DoctorWorkSchedule Create(
         string doctorId, 
         DateTime startDate, 
