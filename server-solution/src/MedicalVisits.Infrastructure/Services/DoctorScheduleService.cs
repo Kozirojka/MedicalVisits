@@ -1,5 +1,6 @@
 ﻿using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Models.Dtos.DoctorDto;
+using MedicalVisits.Models.Dtos.Schedule.CreateScheduleDto;
 using MedicalVisits.Models.Entities.Schedule;
 using MedicalVisits.Models.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,33 @@ public class DoctorScheduleService : IDoctorScheduleService
         _context = context;
     }
 
+    public async Task CreateCustomSchedule(CreateScheduleRequest request)
+    {
+        foreach (var daySchedule in request.DaySchedules)
+        {
+            foreach (var hours in daySchedule.WorkingHours)
+            {
+                var schedule = DoctorWorkSchedule.Create(
+                    doctorId: request.DoctorId,
+                    startDate: request.StartDate,
+                    endDate: request.EndDate,
+                    defaultStartTime: hours.StartTime,
+                    defaultEndTime: hours.EndTime
+                );
+
+                schedule.GenerateTimeSlots(
+                    slotDuration: request.SlotDuration,
+                    workDays: new[] { daySchedule.DayOfWeek }
+                );
+
+                _context.DoctorWorkSchedules.Add(schedule);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
+    
+    
     public async Task<DoctorWorkSchedule> SetDoctorSchedule(DoctorScheduleRequestDto request)
     {
         var existingSchedule = await _context.DoctorWorkSchedules

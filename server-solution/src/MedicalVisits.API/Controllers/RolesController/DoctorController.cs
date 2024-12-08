@@ -2,12 +2,14 @@
 using MediatR;
 using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
+using MedicalVisits.Application.Doctor.Command.SetCustomeSchedule;
 using MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Application.Doctor.Queries.GetTimeSlotFor5Days;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Dtos.DoctorDto;
+using MedicalVisits.Models.Dtos.Schedule.CreateScheduleDto;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -23,15 +25,16 @@ namespace MedicalVisits.API.Controllers.RolesController;
 public class DoctorController : BaseController
 {
     private readonly IDoctorScheduleService _scheduleService;
+    private readonly ILogger<DoctorController> _logger;
     
-    
-    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, IDoctorScheduleService scheduleService) : base(mediator, userManager)
+    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, IDoctorScheduleService scheduleService, ILogger<DoctorController> logger) : base(mediator, userManager)
     {
         _scheduleService = scheduleService;
+        _logger = logger;
     }
 
     [HttpGet("visits/pending")]
-    public async Task<IActionResult> GetTheListOfRelatedToDoctorPendingVisits(
+    public async Task<IActionResult> GetPendingVisits(
         [FromQuery] VisitStatus? status = null)
     {
         
@@ -85,34 +88,26 @@ public class DoctorController : BaseController
     }
 
 
+    
+
+    
     [HttpPost("set-schedule")]
-    public async Task<IActionResult> SetSchedule(DoctorScheduleRequestDto request)
+    public async Task<IActionResult> SetCustomSchedule(CreateScheduleRequest request)
     {
-        try
-        {
-            var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (doctorId == null)
-                return Unauthorized();
+        _logger.LogInformation("We entered in this function");
+        
+        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        request.DoctorId = doctorId;
+        
+        var command = new SetCustomeScheduleCommand(request);
 
-            request.DoctorId = doctorId;
-
-            var schedule = await _scheduleService.SetDoctorSchedule(request);
-            
-            return Ok(new {     
-                message = "Schedule set successfully",
-                scheduleId = schedule.Id,
-                totalSlots = schedule.TimeSlots.Count
-            });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An error occurred while setting the schedule");
-        }
+        var result =  await _Mediator.Send(command);
+        
+        return Ok(result);
     }
+    
+    
+    
     
     [HttpPost("assign-visit")]
     public async Task<IActionResult> AssignVisitToTimeSlot(AssignVisitRequest request)

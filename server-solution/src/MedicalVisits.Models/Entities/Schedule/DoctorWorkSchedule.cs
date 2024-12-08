@@ -29,6 +29,9 @@ public class DoctorWorkSchedule
         if (endDate <= startDate)
             throw new ArgumentException("End date must be after start date");
 
+        startDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
+        endDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
+
         return new DoctorWorkSchedule
         {
             DoctorId = doctorId,
