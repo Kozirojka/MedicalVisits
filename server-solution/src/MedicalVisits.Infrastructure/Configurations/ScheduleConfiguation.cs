@@ -12,9 +12,8 @@ public class ScheduleConfiguation : IEntityTypeConfiguration<ScheduleWorkPlan>
         
         builder.HasMany(u => u.TimeSlots).WithOne(x => x.WorkPlan).OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasOne(plan => plan.Doctor).WithMany().HasForeignKey(x => x.DoctorId);
-        
-        
+        builder.HasOne(plan => plan.User).WithMany().HasForeignKey(x => x.UserId);
+                
         
     }
 }

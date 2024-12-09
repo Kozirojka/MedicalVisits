@@ -11,10 +11,10 @@ public class TimeSlot
     public ScheduleWorkPlan WorkPlan { get; set; } = null!;
     
     public VisitRequest? Request { get; set; }
-    public int RequestId { get; set; }
+    public int? RequestId { get; set; }
     
     
-    private TimeSlot() { }
+    public TimeSlot() { }
     
     public TimeSlot(DateTime startTime, DateTime endTime, VisitRequest visitRequest)
     {
@@ -23,4 +23,9 @@ public class TimeSlot
         IsAvailable = true;
         RequestId = visitRequest.Id;
     }
+    
+    
+    
+    
+    
 }

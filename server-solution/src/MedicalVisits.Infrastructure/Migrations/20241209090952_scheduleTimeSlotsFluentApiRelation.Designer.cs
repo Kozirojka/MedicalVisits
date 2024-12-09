@@ -3,6 +3,7 @@ using System;
 using MedicalVisits.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicalVisits.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241209090952_scheduleTimeSlotsFluentApiRelation")]
+    partial class scheduleTimeSlotsFluentApiRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,9 +105,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3cf769eb-9c8d-4704-a0f3-8faf6a616ec2",
+                            Id = "6cc4db82-8435-46d4-a942-e302d58267a6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3fc66f19-ed3f-4c6d-a844-2145f9ebc594",
+                            ConcurrencyStamp = "1b05869d-657c-47d1-ba80-71708381c400",
                             Email = "admin@medicalvisits.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -112,9 +115,9 @@ namespace MedicalVisits.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
                             NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELJcpweAZzTxUjMAJF+a/gJ5VVxGsyxPM+wdE8ndk3YDDae2eii8/apOwNUOBwxjrg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELxgRYZqUkTN+lPukXn2t1hYavUGhVnZaMTqfXdvLA69ERn9pPF/O9DB73YpDypbfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6183b659-e607-4f87-a50a-06f39c07ec8c",
+                            SecurityStamp = "57039649-e792-4793-852a-f79dd8b1d026",
                             TwoFactorEnabled = false,
                             UserName = "admin@medicalvisits.com"
                         });
@@ -177,17 +180,16 @@ namespace MedicalVisits.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NameOfSchedule")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("NameOfSchedule")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("ScheduleWorkPlans");
                 });
@@ -206,7 +208,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("RequestId")
+                    b.Property<int>("RequestId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
@@ -306,28 +308,28 @@ namespace MedicalVisits.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "f281dfd5-b984-4b08-bf3e-43407d104fe4",
+                            ConcurrencyStamp = "a8492ef9-580c-4eb2-9fa8-1d6a191a69ca",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "f05ecd92-bbf3-457b-90a6-f186bbbf6fde",
+                            ConcurrencyStamp = "968e20ac-392f-4d02-9be7-aba24b7318fa",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
                             Id = "3",
-                            ConcurrencyStamp = "637e1010-83fa-4efd-b833-6f09885a48f0",
+                            ConcurrencyStamp = "40c19536-b2b6-4db8-ae9b-fd9bd9bb1634",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
                             Id = "4",
-                            ConcurrencyStamp = "9e68772f-8223-4817-bbf9-5a70f82194a7",
+                            ConcurrencyStamp = "4146f98a-6bb4-4959-b5b1-770a3a600ef2",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         });
@@ -422,7 +424,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "3cf769eb-9c8d-4704-a0f3-8faf6a616ec2",
+                            UserId = "6cc4db82-8435-46d4-a942-e302d58267a6",
                             RoleId = "1"
                         });
                 });
@@ -519,20 +521,22 @@ namespace MedicalVisits.Infrastructure.Migrations
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", b =>
                 {
-                    b.HasOne("MedicalVisits.Models.Entities.ApplicationUser", "User")
+                    b.HasOne("MedicalVisits.Models.Entities.DoctorProfile", "Doctor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.TimeSlot", b =>
                 {
                     b.HasOne("MedicalVisits.Models.Entities.VisitRequest", "Request")
                         .WithOne()
-                        .HasForeignKey("MedicalVisits.Models.Entities.Schedule.TimeSlot", "RequestId");
+                        .HasForeignKey("MedicalVisits.Models.Entities.Schedule.TimeSlot", "RequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", "WorkPlan")
                         .WithMany("TimeSlots")
