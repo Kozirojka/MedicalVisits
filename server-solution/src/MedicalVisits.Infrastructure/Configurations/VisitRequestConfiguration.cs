@@ -18,4 +18,4 @@ public class VisitRequestConfiguration : IEntityTypeConfiguration<VisitRequest>
             .HasForeignKey(v => v.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
-}
+}   

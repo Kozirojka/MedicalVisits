@@ -1,5 +1,6 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
 using MedicalVisits.Models.Entities;
+using MedicalVisits.Models.Entities.Schedule;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VisitRequest> VisitRequests { get; set; }
     public DbSet<PatientProfile> PatientProfiles { get; set; }
     public DbSet<DoctorProfile> DoctorProfiles { get; set; }
+    public DbSet<TimeSlot> TimeSlots { get; set; }
+    public DbSet<ScheduleWorkPlan> ScheduleWorkPlans { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -31,12 +34,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         
         
-        // builder.ApplyConfiguration(new DoctorWorkScheduleConfiguration());
-        // builder.ApplyConfiguration(new TimeSlotConfiguration());
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new VisitRequestConfiguration());
         builder.ApplyConfiguration(new DoctorProfileConfiguration());
         builder.ApplyConfiguration(new PatientProfileConfiguration());
+        builder.ApplyConfiguration(new ScheduleConfiguation());
+        builder.ApplyConfiguration(new TimeSlotConfiguration());
+        
         
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole
