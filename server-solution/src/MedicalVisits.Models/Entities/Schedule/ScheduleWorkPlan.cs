@@ -54,7 +54,7 @@ public class ScheduleWorkPlan
             TimeSlots.Add(slot);
         }
     }
-
+    
     public void DeleteTimeSlot(TimeSlot timeSlot)
     {
         TimeSlots.Remove(timeSlot);

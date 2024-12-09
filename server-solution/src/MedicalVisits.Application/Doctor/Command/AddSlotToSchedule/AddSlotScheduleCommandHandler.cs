@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalVisits.Application.Doctor.Command.AddSlotToSchedule;
 
-public class AddSlotScheduleCommandHandler : IRequestHandler<AddSlotScheduleCommnad,bool>
+public class AddSlotScheduleCommandHandler : IRequestHandler<AddSlotScheduleCommand,bool>
 {
     private readonly ILogger<AddSlotScheduleCommandHandler> _logger;
     
@@ -19,7 +19,7 @@ public class AddSlotScheduleCommandHandler : IRequestHandler<AddSlotScheduleComm
     }
 
 
-    public async Task<bool> Handle(AddSlotScheduleCommnad request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AddSlotScheduleCommand request, CancellationToken cancellationToken)
     {
 
         if (request._slotDtos == null)

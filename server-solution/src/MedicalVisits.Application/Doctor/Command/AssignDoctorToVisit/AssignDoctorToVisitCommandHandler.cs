@@ -33,7 +33,6 @@ public class AssignDoctorToVisitCommandHandler : IRequestHandler<AssignDoctorToV
             throw new NotFoundException($"Visit with ID {request.VisitId} not found");
         }
 
-        // Verify doctor exists and has correct role
         var doctor = await _userManager.FindByIdAsync(request.DoctorId);
         if (doctor == null || !await _userManager.IsInRoleAsync(doctor, "Doctor"))
         {
@@ -43,6 +42,11 @@ public class AssignDoctorToVisitCommandHandler : IRequestHandler<AssignDoctorToV
         }
         result.Status = VisitStatus.DoctorAccepted;
 
+        var visit = _dbContext.TimeSlots.SingleOrDefault(u => u.Id == request.SlotTimeId);
+        
+        visit?.SetVisitRequest(request.VisitId);
+        
+        
         await _dbContext.SaveChangesAsync();
         
         

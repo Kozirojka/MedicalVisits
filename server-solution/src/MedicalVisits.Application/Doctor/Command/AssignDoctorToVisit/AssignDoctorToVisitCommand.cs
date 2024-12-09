@@ -2,20 +2,19 @@
 
 namespace MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 
-public class AssignDoctorToVisitCommand : IRequest<AssignmentResult>  // Changed return type to a proper result
+public class AssignDoctorToVisitCommand : IRequest<AssignmentResult> 
 {
-    // Properties to store the assignment details
     public int VisitId { get; }
     public string DoctorId { get; }
-
-    public AssignDoctorToVisitCommand(int visitId, string doctorId)
+    public int SlotTimeId { get; set;  }
+    public AssignDoctorToVisitCommand(int visitId, string doctorId, int slotTimeId)
     {
         VisitId = visitId;
         DoctorId = doctorId;
+        SlotTimeId = slotTimeId;
     }
 }
 
-// Result class to return assignment outcome
 public class AssignmentResult
 {
     public bool Success { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using MediatR;
 using MedicalVisits.API.Controllers.Base;
-using MedicalVisits.Application.Doctor.Command;
 using MedicalVisits.Application.Doctor.Command.AddSlotToSchedule;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 using MedicalVisits.Application.Doctor.Command.CreateScheduleWithSlots;
@@ -10,7 +9,6 @@ using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Dtos.Schedule;
 using MedicalVisits.Models.Entities;
-using MedicalVisits.Models.Entities.Schedule;
 using MedicalVisits.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -54,12 +52,12 @@ public class DoctorController : BaseController
     /*
      * todo: меотдл AssighnDoctor має проблеми з тим, що можна преедавати дані у body
       */
-    [HttpPut("doctor/{visitId}")]
-    public async Task<IActionResult> AssignDoctorToVisit(int visitId)
+    [HttpPut("doctor/{visitId}/{scheduleId}")]
+    public async Task<IActionResult> AssignDoctorToVisit(int visitId, int scheduleId)
     {
         var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var command = new AssignDoctorToVisitCommand(visitId, doctorId);
+        var command = new AssignDoctorToVisitCommand(visitId, doctorId, scheduleId);
 
         var result = await _Mediator.Send(command);
 
@@ -116,7 +114,7 @@ public class DoctorController : BaseController
 
         var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var command = new AddSlotScheduleCommnad(dto, sceduleId);
+        var command = new AddSlotScheduleCommand(dto, sceduleId);
         
         var result = await _Mediator.Send(command);
         

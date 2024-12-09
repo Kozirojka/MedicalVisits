@@ -23,8 +23,11 @@ public class TimeSlot
         IsAvailable = true;
         RequestId = visitRequest.Id;
     }
-    
-    
+
+    public void SetVisitRequest(int requestId)
+    {
+        RequestId = requestId;
+    }
     
     
     
