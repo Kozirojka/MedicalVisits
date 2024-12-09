@@ -17,6 +17,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace MedicalVisits.API.Controllers.RolesController;
 
 
+/// <summary>
+/// Контролер для управління функціоналом лікаря в системі медичних візитів.
+/// Забезпечує операції з візитами, розкладом та часовими слотами.
+/// </summary>
+/// <remarks>
+/// Вимагає автентифікації та роль "Doctor" для доступу до всіх endpoint-ів
+/// </remarks>
 [ApiController]
 [Authorize(Roles = "Doctor")]
 [Route("api/[controller]")]
@@ -29,6 +36,11 @@ public class DoctorController : BaseController
         _logger = logger;
     }
 
+    /// <summary>
+    /// Отримати візити які очікують розгляду лікаря та підтвердежння
+    /// </summary>
+    /// <param name="status"></param>
+    /// <returns></returns>
     [HttpGet("visits/pending")]
     public async Task<IActionResult> GetPendingVisits(
         [FromQuery] VisitStatus? status = null)
@@ -49,9 +61,16 @@ public class DoctorController : BaseController
         return Ok(result);
     }
     
-    /*
-     * todo: меотдл AssighnDoctor має проблеми з тим, що можна преедавати дані у body
-      */
+    /// <summary>
+    /// Метод потрібний для того, щоб призначити лікаря до запитут
+    /// "Від цього моменту лікар буде головним за цей запит та обробляти його".
+    /// в резульатті в базі даних заторкуються такі таблички.
+    ///
+    /// VisitRequest, TimeSlots, ScheduleWorkHours.
+    /// </summary>
+    /// <param name="visitId"></param>
+    /// <param name="scheduleId"></param>
+    /// <returns></returns>
     [HttpPut("doctor/{visitId}/{scheduleId}")]
     public async Task<IActionResult> AssignDoctorToVisit(int visitId, int scheduleId)
     {
@@ -67,7 +86,9 @@ public class DoctorController : BaseController
     
     
     
-    //todo: Зроби безпечнішу функцію
+    //todo: пристосувати цю функцію, під наш розкад, потрібно добавити у повернення інформацію про TimeSlots
+    //Timeslot якщо він підтверджений має інформацію про візит
+    //todo: try/catch block
     [HttpGet("visits/confirmed")]
     public async Task<IActionResult> GetConfirmedVisits()
     {

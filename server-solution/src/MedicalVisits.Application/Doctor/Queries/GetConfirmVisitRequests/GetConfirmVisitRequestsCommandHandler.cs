@@ -40,7 +40,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         
         if (!visits.Any())
         {
-            return new RouteResponse(); // або null, залежно від вашої логіки
+            return new RouteResponse(); 
         }
         
         List<Coordinate> waypoints = new List<Coordinate>();
