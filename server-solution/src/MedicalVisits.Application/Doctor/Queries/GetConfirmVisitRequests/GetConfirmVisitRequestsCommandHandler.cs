@@ -30,13 +30,16 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         CancellationToken cancellationToken)
     {
         
+
+        var visits = _dbContext.TimeSlots
+            .Where(ts => ts.WorkPlan.UserId == request.DoctorId)
+            .Where(ts => ts.RequestId != null)
+            .Include(ts => ts.Request)
+            .ThenInclude(v => v.Patient)
+            .Select(ts => ts.Request)
+          .ToList();
         
-        //todo: в майбутньому потрібно завести можливість пошуку за графіком
-        var visits = await _dbContext.VisitRequests
-            .Where(u => request.DoctorId == u.DoctorId)
-            .Where(u => u.Status == request.Status)
-            .Include(v => v.Patient)
-            .ToListAsync(cancellationToken);
+        
         
         if (!visits.Any())
         {
