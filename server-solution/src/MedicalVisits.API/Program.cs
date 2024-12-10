@@ -155,10 +155,10 @@ app.UseSwaggerUI(c =>
 app.UseCors("AllowSpecificOrigin");
 
 	
-app.MapHub<ChatHub>("/hubs/ChatHub");
+app.MapHub<ChatHub>("/ChatHub");
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthorization(); 
 app.MapControllers();
 
 app.Run();
