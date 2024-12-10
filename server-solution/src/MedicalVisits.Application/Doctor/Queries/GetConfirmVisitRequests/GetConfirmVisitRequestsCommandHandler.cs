@@ -13,9 +13,9 @@ namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
 public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmVisitRequestsCommand, RouteResponse>
 {
-    public ApplicationDbContext _dbContext;
-    public UserManager<ApplicationUser> _userManager;
-    public IGeocodingService _geocodingService;
+    public readonly ApplicationDbContext _dbContext;
+    public readonly UserManager<ApplicationUser> _userManager;
+    public readonly IGeocodingService _geocodingService;
     private readonly IRouteService _routeService;
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
         UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient, IRouteService routeService)

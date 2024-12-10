@@ -7,6 +7,7 @@ using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,7 +34,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Ge
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddHttpClient();
-
+builder.Services.AddSignalR();
 
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));
@@ -89,7 +90,6 @@ builder.Services.AddAuthentication(options =>
 
 
 
-// Налаштування CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -111,7 +111,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Medical Visits API", Version = "v1" });
     
-    // Додаємо підтримку JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -144,8 +143,8 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
-Log.Information("Application si srunnign!");
-
+Log.Information("Application is running!");
+Log.Information("http://localhost:5268");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -154,6 +153,9 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 app.UseCors("AllowSpecificOrigin");
+
+	
+app.MapHub<ChatHub>("/hubs/ChatHub");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
