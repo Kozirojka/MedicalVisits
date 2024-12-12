@@ -2,6 +2,7 @@
 using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Chat.CreatePrivateChat;
+using MedicalVisits.Application.Chat.Queries.GetAllRelatedChat;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Dtos.AuthDto;
 using MedicalVisits.Models.Entities;
@@ -58,5 +59,23 @@ public class ChatController : BaseController
         
         
         return Ok(result);
+    }
+
+
+    [HttpGet("chats")]
+    public async Task<IActionResult> GetAllRelatedChats()
+    {
+        string? userId = _userService.GetUserId(User);
+
+        var query = new GetAllChatQuery(userId);
+        
+        var chatList = await _Mediator.Send(query);
+
+        if (chatList == null)
+        {
+            return BadRequest("chatList is empty");
+        }
+
+        return Ok(chatList);
     }
 }
