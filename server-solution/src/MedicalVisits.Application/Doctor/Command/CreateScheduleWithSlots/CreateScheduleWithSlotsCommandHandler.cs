@@ -23,7 +23,6 @@ public class CreateScheduleWithSlotsCommandHandler : IRequestHandler<CreateSched
 
     public async Task<bool> Handle(CreateScheduleWithSlotsCommand request, CancellationToken cancellationToken)
 {
-    // Змінюємо запит, щоб отримати тільки ID доктора
     var doctorId = await _dbContext.DoctorProfiles
         .AsNoTracking()
         .Where(u => u.User.Id == request.DoctorId)

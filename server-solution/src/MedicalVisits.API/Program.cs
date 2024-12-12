@@ -7,6 +7,7 @@ using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.Services.UsersService;
 using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Entities;
@@ -33,6 +34,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 

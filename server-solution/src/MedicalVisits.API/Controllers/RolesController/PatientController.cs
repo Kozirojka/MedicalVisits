@@ -2,6 +2,7 @@
 using System.Text.Json;
 using MediatR;
 using MedicalVisits.API.Controllers.Base;
+using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Patient.Command;
 using MedicalVisits.Application.Patient.Command.CreateVisitRequest;
 using MedicalVisits.Models.Dtos;
@@ -17,8 +18,11 @@ namespace MedicalVisits.API.Controllers.RolesController;
 [Route("api/[controller]")]
 public class PatientController : BaseController
 {
-    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager) : base(mediator, userManager)
+
+    private readonly Logger<PatientController> _logger;
+    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager, Logger<PatientController> logger) : base(mediator, userManager)
     {
+        _logger = logger;
     }
     
     
@@ -43,6 +47,27 @@ public class PatientController : BaseController
         catch (ApplicationException ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("Users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        try 
+        {
+            _logger.LogInformation("Its function for get user");
+            var command = new GetAllUsersQuery();
+            var result = await _Mediator.Send(command);
+
+            if (result == null)
+                return BadRequest();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // Додайте логування
+            return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
 }
