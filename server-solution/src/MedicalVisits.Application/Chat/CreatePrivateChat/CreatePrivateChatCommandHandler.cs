@@ -13,7 +13,7 @@ public class CreatePrivateChatCommandHandler : IRequestHandler<CreatePrivateChat
     {
         _context = context;
     }
-
+    
     public async Task<GeneralRespone> Handle(CreatePrivateChatCommand request, CancellationToken cancellationToken)
     {
         var chat = MedicalVisits.Models.Entities.ChatEntities.Chat.CreatePrivateChat(
