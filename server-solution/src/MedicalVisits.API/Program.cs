@@ -47,11 +47,10 @@ builder.Services.Configure<GoogleMapsServiceSettings>(
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    // Налаштовуємо фільтри для різних просторів імен
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
-    .WriteTo.Console()  // Все ще логуємо в консоль для розробки
+    .WriteTo.Console() 
     .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
     .Enrich.FromLogContext()
     .CreateLogger();
