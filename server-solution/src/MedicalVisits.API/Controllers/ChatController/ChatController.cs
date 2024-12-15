@@ -3,12 +3,15 @@ using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Chat.CreatePrivateChat;
 using MedicalVisits.Application.Chat.Queries.GetAllRelatedChat;
+using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Dtos.AuthDto;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MedicalVisits.API.Controllers.ChatController;
 
@@ -18,10 +21,15 @@ namespace MedicalVisits.API.Controllers.ChatController;
 public class ChatController : BaseController
 {
     private readonly IUserService _userService;
-    
-    public ChatController(IMediator mediator, UserManager<ApplicationUser> userManager, IUserService userService) : base(mediator, userManager)
+    private readonly IHubContext<ChatHub> _chatHubContext;
+    private readonly IMessagesService _messagesService;
+    private readonly ApplicationDbContext _dbContext;
+    public ChatController(IMediator mediator, UserManager<ApplicationUser> userManager, IUserService userService, IHubContext<ChatHub> chatHubContext, IMessagesService messagesService, ApplicationDbContext dbContext) : base(mediator, userManager)
     {
         _userService = userService;
+        _chatHubContext = chatHubContext;
+        _messagesService = messagesService;
+        _dbContext = dbContext;
     }
 
     [HttpGet("users")]
@@ -77,5 +85,28 @@ public class ChatController : BaseController
         }
 
         return Ok(chatList);
+    }
+
+    [HttpGet("{chatId}/history")]
+    public async Task<IActionResult> GetChatMessages(int chatId)
+    {
+
+        var exist = _dbContext.Chats.FirstOrDefault(c => c.Id == chatId);
+        
+        
+        if (exist == null)
+        {
+
+            return BadRequest("Chut is is null");
+        }
+        var messagePack = await _messagesService.GetAllRelatedToChatIdMessagesAsync(chatId);
+
+        if (messagePack == null)
+        {
+            return NotFound("Messages from mongoDb havent fetched");
+        }
+        
+        return Ok(messagePack);
+        
     }
 }
