@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MedicalVisits.Models.Entities.ChatEntities;
+using Microsoft.AspNetCore.Identity;
 
 namespace MedicalVisits.Models.Entities;
 
@@ -8,7 +9,7 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
-    
+    public ICollection<ChatParticipants> Chats { get; set; }
     public Address Address { get; set; }
 
     // Метод для оновлення адреси

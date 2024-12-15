@@ -7,10 +7,13 @@ using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.Services.UsersService;
+using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -32,7 +35,11 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddHttpClient();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>(); 
 
 
 builder.Services.Configure<GoogleMapsServiceSettings>(
@@ -40,11 +47,10 @@ builder.Services.Configure<GoogleMapsServiceSettings>(
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    // Налаштовуємо фільтри для різних просторів імен
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
-    .WriteTo.Console()  // Все ще логуємо в консоль для розробки
+    .WriteTo.Console() 
     .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
     .Enrich.FromLogContext()
     .CreateLogger();
@@ -89,7 +95,6 @@ builder.Services.AddAuthentication(options =>
 
 
 
-// Налаштування CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -111,7 +116,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Medical Visits API", Version = "v1" });
     
-    // Додаємо підтримку JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -144,8 +148,8 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
-Log.Information("Application si srunnign!");
-
+Log.Information("Application is running!");
+Log.Information("http://localhost:5268");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -155,8 +159,11 @@ app.UseSwaggerUI(c =>
 });
 app.UseCors("AllowSpecificOrigin");
 
+	
+app.MapHub<ChatHub>("/ChatHub");
+
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthorization(); 
 app.MapControllers();
 
 app.Run();

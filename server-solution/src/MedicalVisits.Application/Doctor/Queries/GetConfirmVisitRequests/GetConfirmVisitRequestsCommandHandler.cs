@@ -13,9 +13,9 @@ namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
 public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmVisitRequestsCommand, RouteResponse>
 {
-    public ApplicationDbContext _dbContext;
-    public UserManager<ApplicationUser> _userManager;
-    public IGeocodingService _geocodingService;
+    public readonly ApplicationDbContext _dbContext;
+    public readonly UserManager<ApplicationUser> _userManager;
+    public readonly IGeocodingService _geocodingService;
     private readonly IRouteService _routeService;
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
         UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient, IRouteService routeService)
@@ -30,17 +30,20 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         CancellationToken cancellationToken)
     {
         
+
+        var visits = _dbContext.TimeSlots
+            .Where(ts => ts.WorkPlan.UserId == request.DoctorId)
+            .Where(ts => ts.RequestId != null)
+            .Include(ts => ts.Request)
+            .ThenInclude(v => v.Patient)
+            .Select(ts => ts.Request)
+          .ToList();
         
-        //todo: в майбутньому потрібно завести можливість пошуку за графіком
-        var visits = await _dbContext.VisitRequests
-            .Where(u => request.DoctorId == u.DoctorId)
-            .Where(u => u.Status == request.Status)
-            .Include(v => v.Patient)
-            .ToListAsync(cancellationToken);
+        
         
         if (!visits.Any())
         {
-            return new RouteResponse(); // або null, залежно від вашої логіки
+            return new RouteResponse(); 
         }
         
         List<Coordinate> waypoints = new List<Coordinate>();

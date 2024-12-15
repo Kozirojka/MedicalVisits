@@ -45,8 +45,6 @@ public class AssignDoctorToVisitCommandHandler : IRequestHandler<AssignDoctorToV
         var visit = _dbContext.TimeSlots.SingleOrDefault(u => u.Id == request.SlotTimeId);
         
         visit?.SetVisitRequest(request.VisitId);
-        
-        
         await _dbContext.SaveChangesAsync();
         
         

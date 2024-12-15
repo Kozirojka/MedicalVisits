@@ -14,6 +14,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalVisits.API.Controllers.RolesController;
 
+
+/// <summary>
+/// Наразу у цьому конролері присутня можливість для функції
+/// Взяти всіх користувачів
+/// </summary>
 [Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
