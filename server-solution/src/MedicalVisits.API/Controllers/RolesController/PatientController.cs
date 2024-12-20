@@ -36,9 +36,6 @@ public class PatientController : BaseController
         try
         {
             
-            // Додаємо логування
-            Console.WriteLine($"Отримано запит на створення візиту: {JsonSerializer.Serialize(visitRequest)}");
-
             var command = new CreateVisitRequestCommand(visitRequest, patientId);
             var result = await _Mediator.Send(command);
 
@@ -66,8 +63,8 @@ public class PatientController : BaseController
         }
         catch (Exception ex)
         {
-            // Додайте логування
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+    
 }
