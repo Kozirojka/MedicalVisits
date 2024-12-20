@@ -32,7 +32,6 @@
 
     <ItemGroup>
       <Folder Include="Auth\Queries\" />
-      <Folder Include="Patient\Queries\" />
     </ItemGroup>
 
 </Project>
