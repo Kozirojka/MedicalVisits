@@ -50,7 +50,7 @@ public class AdminController : BaseController
         }
         catch (Exception ex)
         {
-            // Додайте логування
+            
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
@@ -174,10 +174,10 @@ public class AdminController : BaseController
     }
     
     //потрібно поправити, так, щоб передавалась, id пацієнта, і уже на основі цього id запиту буде визначатись адреса 
-    [HttpGet("Nearest-Doctor/{RequestId}")]  // залишаємо RequestId
-    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int requestId)  // додаємо Name = "RequestId"
+    [HttpGet("Nearest-Doctor/{RequestId}")]  
+    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int requestId) 
     {
-        if (requestId <= 0)  // перевіряємо чи ID більше 0
+        if (requestId <= 0)  
         {
             return BadRequest("Ідентифікатор запиту повинен бути більше 0.");
         }
@@ -185,7 +185,7 @@ public class AdminController : BaseController
         try 
         {
             var query = new GetNearestDoctorsQuery(requestId);
-            var result = await _Mediator.Send(query);  // змінив на camelCase
+            var result = await _Mediator.Send(query); 
 
             if (result == null)
             {
@@ -196,7 +196,6 @@ public class AdminController : BaseController
         }
         catch (Exception ex)
         {
-            // Краще логувати помилку
             return StatusCode(500, "Сталася помилка при обробці запиту.");
         }
     }

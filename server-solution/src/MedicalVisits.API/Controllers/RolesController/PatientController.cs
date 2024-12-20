@@ -89,4 +89,6 @@ public class PatientController : BaseController
 
         return Ok(commandResult);
     }
+    
+    
 }

@@ -5,7 +5,9 @@ using MedicalVisits.Application.Doctor.Command.AddSlotToSchedule;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 using MedicalVisits.Application.Doctor.Command.CreateScheduleWithSlots;
 using MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
+using MedicalVisits.Application.Doctor.Queries.GetMedicalCard;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Dtos.Schedule;
 using MedicalVisits.Models.Entities;
@@ -30,10 +32,11 @@ namespace MedicalVisits.API.Controllers.RolesController;
 public class DoctorController : BaseController
 {
     private readonly ILogger<DoctorController> _logger;
-    
-    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<DoctorController> logger) : base(mediator, userManager)
+    private readonly IUserService _userService;
+    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<DoctorController> logger, IUserService userService) : base(mediator, userManager)
     {
         _logger = logger;
+        _userService = userService;
     }
 
     /// <summary>
@@ -142,6 +145,19 @@ public class DoctorController : BaseController
         
         return Ok(result);
     }
-    
+
+
+    [HttpGet("medical-card")]
+    public async Task<IActionResult> GetMedicalCard()
+    {
+
+        var userId = _userService.GetUserId(User);
+        
+        var query = new GetMedicalCardQuery();
+        
+        var medicalCard = await _Mediator.Send(query);
+        
+        return Ok(medicalCard);
+    }
     
 }
