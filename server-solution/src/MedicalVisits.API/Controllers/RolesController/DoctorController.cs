@@ -91,7 +91,6 @@ public class DoctorController : BaseController
     
     //todo: пристосувати цю функцію, під наш розкад, потрібно добавити у повернення інформацію про TimeSlots
     //Timeslot якщо він підтверджений має інформацію про візит
-    //todo: try/catch block
     [HttpGet("visits/confirmed")]
     public async Task<IActionResult> GetConfirmedVisits()
     {
