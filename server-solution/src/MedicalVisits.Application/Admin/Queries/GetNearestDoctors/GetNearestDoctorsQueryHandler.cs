@@ -41,8 +41,8 @@ public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQu
         Console.ForegroundColor = ConsoleColor.Red;
         Console.OutputEncoding = Encoding.UTF8;
         var visitRequest = await _dbContext.VisitRequests
-            .Include(v => v.Patient) // Завантаження пов'язаного пацієнта
-            .ThenInclude(p => p.Address) // Завантаження адреси пацієнта (якщо потрібно)
+            .Include(v => v.Patient) 
+            .ThenInclude(p => p.Address) 
             .FirstOrDefaultAsync(v => v.Id ==  request.requestId, cancellationToken);
 
 
@@ -54,7 +54,6 @@ public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQu
         {
             Console.WriteLine(visitRequest.Description + "------------------------------");
         }
-        // Отримати пацієнта
         var patientId = visitRequest.PatientId;
         var patient = await _userManager.FindByIdAsync(patientId);
         

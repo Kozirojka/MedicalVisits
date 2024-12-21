@@ -7,6 +7,7 @@ using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.Services.MessagesService;
 using MedicalVisits.Infrastructure.Services.UsersService;
 using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Configurations;
@@ -25,6 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<MessageDatabaseSettings>(builder.Configuration.GetSection("MessageDatabaseSettings"));
+
+builder.Services.AddSingleton<IMessagesService, MessagesService>();
 
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
@@ -91,6 +96,28 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = builder.Configuration["JWT:Audience"],
             ClockSkew = TimeSpan.Zero
         };
+        
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    context.Token = accessToken;
+                }
+
+                var path = context.HttpContext.Request.Path;
+                if (path.StartsWithSegments("/ChatHub"))
+                {
+                    context.Token ??= context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+
     });
 
 
@@ -159,7 +186,7 @@ app.UseSwaggerUI(c =>
 });
 app.UseCors("AllowSpecificOrigin");
 
-	
+
 app.MapHub<ChatHub>("/ChatHub");
 
 app.UseHttpsRedirection();

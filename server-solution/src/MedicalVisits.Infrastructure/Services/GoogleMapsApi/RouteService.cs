@@ -21,7 +21,6 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
          _httpClient = httpClient;
          _apiKey = settings.Value.ApiKey;
 
-         // Встановлюємо заголовки один раз в конструкторі    
          _httpClient.DefaultRequestHeaders.Add("X-Goog-Api-Key", _apiKey);
          _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
              "routes.optimizedIntermediateWaypointIndex,routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline");
@@ -73,7 +72,6 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
                  throw new Exception($"API Error: {responseContent}");
              }
 
-             //todo: зробити можливість серелізації даних і зробити так, щоб воно могло класно повернутись
              var routeResponse = JsonConvert.DeserializeObject<RouteResponse>(responseContent);
 
              return routeResponse;
@@ -125,16 +123,13 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
 
              response.EnsureSuccessStatusCode();
 
-             // Десеріалізуємо відповідь
              var result = await response.Content.ReadFromJsonAsync<GoogleMapsResponse>();
 
-             // Перевіряємо чи є маршрути
              if (result?.Routes == null || !result.Routes.Any())
              {
                  throw new Exception("Не знайдено маршрутів між вказаними точками");
              }
 
-             // Повертаємо відстань в кілометрах (конвертуємо з метрів)
              return result.Routes.First().DistanceMeters / 1000.0;
          }
          catch (HttpRequestException ex)

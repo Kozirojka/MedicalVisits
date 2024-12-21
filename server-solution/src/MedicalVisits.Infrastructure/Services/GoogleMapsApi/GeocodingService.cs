@@ -1,6 +1,7 @@
 ﻿using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models;
 using MedicalVisits.Models.Configurations;
+using MedicalVisits.Models.diraction.models;
 using MedicalVisits.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -20,7 +21,7 @@ public class GeocodingService : IGeocodingService
         _settings = settings;
     }
     
-    public async Task<(double Latitude, double Longitude)> GeocodeAddressAsync(Address address)
+    public async Task<Coordinate> GeocodeAddressAsync(Address address)
     {
         var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(address.ToString())}&key={_settings.Value.ApiKey}";
 
@@ -46,7 +47,13 @@ public class GeocodingService : IGeocodingService
             double latitude = (double)location["lat"];
             double longitude = (double)location["lng"];
 
-            return (latitude, longitude);
+            var coordinate = new Coordinate()
+            {
+                Latitude = latitude,
+                Longitude = longitude
+            };
+            
+            return coordinate;
         }
         catch (HttpRequestException ex)
         {

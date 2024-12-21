@@ -79,7 +79,6 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         
         var Doctor = await _userManager.FindByIdAsync(request.DoctorId);
         
-        //todo: зробити так, щоб в програмі використвоувався один стиль координат клас "Coordinate"
         var startPointOfDoctor = await _geocodingService.GeocodeAddressAsync(Doctor.Address);
         
         var resultOfOptimized = await _routeService.GetOptimizedRouteAsync(new Coordinate()

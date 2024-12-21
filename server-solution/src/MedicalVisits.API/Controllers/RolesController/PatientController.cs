@@ -5,6 +5,8 @@ using MedicalVisits.API.Controllers.Base;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Patient.Command;
 using MedicalVisits.Application.Patient.Command.CreateVisitRequest;
+using MedicalVisits.Application.Patient.Queries.GetAllVisitHistory;
+using MedicalVisits.Infrastructure.Services.UsersService;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +22,11 @@ public class PatientController : BaseController
 {
 
     private readonly Logger<PatientController> _logger;
-    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager, Logger<PatientController> logger) : base(mediator, userManager)
+    private readonly UserService _userService;
+    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager, Logger<PatientController> logger, UserService userService) : base(mediator, userManager)
     {
         _logger = logger;
+        _userService = userService;
     }
     
     
@@ -36,9 +40,6 @@ public class PatientController : BaseController
         try
         {
             
-            // Додаємо логування
-            Console.WriteLine($"Отримано запит на створення візиту: {JsonSerializer.Serialize(visitRequest)}");
-
             var command = new CreateVisitRequestCommand(visitRequest, patientId);
             var result = await _Mediator.Send(command);
 
@@ -66,8 +67,28 @@ public class PatientController : BaseController
         }
         catch (Exception ex)
         {
-            // Додайте логування
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+
+
+    [HttpGet("visits/history")]
+    public async Task<IActionResult> GetAllVisitHistory()
+    {
+        var userId = _userService.GetUserId(User);
+
+        var query = new GetAllVisitHistoryQuery(userId);
+
+        var commandResult = await _Mediator.Send(query);
+
+        if (commandResult == null)
+        {
+            return BadRequest("There is no visits history");
+        }
+
+
+        return Ok(commandResult);
+    }
+    
+    
 }
