@@ -31,11 +31,9 @@ namespace MedicalVisits.API.Controllers.RolesController;
 [Route("api/[controller]")]
 public class DoctorController : BaseController
 {
-    private readonly ILogger<DoctorController> _logger;
     private readonly IUserService _userService;
-    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<DoctorController> logger, IUserService userService) : base(mediator, userManager)
+    public DoctorController(IMediator mediator, UserManager<ApplicationUser> userManager, IUserService userService) : base(mediator, userManager)
     {
-        _logger = logger;
         _userService = userService;
     }
 
