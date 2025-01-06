@@ -1,4 +1,5 @@
 using System.Text;
+using MedicalVisits.API;
 using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
@@ -31,10 +32,18 @@ builder.Services.AddSingleton<IMessagesService, MessagesService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
 
+
+// Потрібно для того, щоб потім легко найти
+// всі контролери які знаходяться в одній збірці з IApiMarker
+builder.Services.AddControllers().AddApplicationPart(typeof(IApiMarker).Assembly);
+
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
+
+
 builder.Services.AddScoped<IGeocodingService, GeocodingService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddScoped<IUserService, UserService>();
