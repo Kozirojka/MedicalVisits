@@ -29,9 +29,4 @@
       <ProjectReference Include="..\MedicalVisits.Models\MedicalVisits.Models.csproj" />
     </ItemGroup>
 
-
-    <ItemGroup>
-      <Folder Include="Auth\Queries\" />
-    </ItemGroup>
-
 </Project>

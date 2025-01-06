@@ -1,10 +1,8 @@
 using System.Text;
-using MediatR;
 using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Infrastructure.Persistence;
-using MedicalVisits.Infrastructure.Services;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Infrastructure.Services.MessagesService;
@@ -19,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,18 +47,18 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
-    .WriteTo.Console() 
-    .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .CreateLogger();
-
-
-builder.Host.UseSerilog();
+// Log.Logger = new LoggerConfiguration()
+//     .MinimumLevel.Information()
+//     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
+//     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
+//     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
+//     .WriteTo.Console() 
+//     .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
+//     .Enrich.FromLogContext()
+//     .CreateLogger();
+//
+//
+// builder.Host.UseSerilog();
 
 
 
@@ -126,7 +123,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://localhost:3000", "http://localhost:5268")
+            .WithOrigins("http://localhost:3000", "https://localhost:7145")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -176,7 +173,6 @@ var app = builder.Build();
 
 
 Log.Information("Application is running!");
-Log.Information("http://localhost:5268");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
