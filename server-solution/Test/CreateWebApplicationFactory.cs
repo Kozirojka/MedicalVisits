@@ -44,27 +44,7 @@ public class CreateWebApplicationFactory : WebApplicationFactory<IApiMarker>, IA
     }
     
     
-    // IWebHostBuilder дозволяє переконфігурувати сервіси у моєму застосунку
-    // protected override void ConfigureWebHost(IWebHostBuilder builder)
-    // {
-    //
-    //     string _connectionString = "Host=localhost;Port=5432;Database=MedicalVisits;Username=postgres;Password=admin";
-    //     
-    //     Environment.SetEnvironmentVariable("ConnectionStrings:DefaultConnection", _postgresSqlContainer.GetConnectionString());
-    //     
-    //     
-    //     
-    //     builder.ConfigureServices(services =>
-    //     {
-    //         services .Remove(services .SingleOrDefault(service => typeof(DbContextOptions<ApplicationDbContext>) == service.ServiceType));
-    //         
-    //         services .Remove(services.SingleOrDefault(service => typeof(DbConnection) == service.ServiceType));
-    //         
-    //         
-    //         services.AddDbContext<ApplicationDbContext>((_, option) => option.UseNpgsql(_connectionString));
-    //     });
-    // }
-    
+   
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         Environment.SetEnvironmentVariable("ConnectionStrings:Postgres", _postgresSqlContainer.GetConnectionString());
