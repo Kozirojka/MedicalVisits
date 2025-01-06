@@ -14,25 +14,25 @@ namespace Test;
 
 public class CreateWebApplicationFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    
+
     private DbConnection _dbConnection = null!;
     private Respawner _respawner = null!;
-    
+
     public HttpClient HttpClient { get; private set; } = null!;
-    
+
     private readonly PostgreSqlContainer _postgresSqlContainer = new PostgreSqlBuilder()
         .WithImage("postgres:latest")
         .WithDatabase("MedicalVisits")
         .WithUsername("postgres")
         .WithPassword("admin")
         .Build();
-    
-   
+
+
 
     //контроль життя застосунку
     public async Task InitializeAsync()
     {
-        
+
         await _postgresSqlContainer.StartAsync();
 
         HttpClient = CreateClient();
@@ -41,12 +41,25 @@ public class CreateWebApplicationFactory : WebApplicationFactory<IApiMarker>, IA
     public async Task DisposeAsync()
     {
         await _postgresSqlContainer.DisposeAsync();
+        await _dbConnection.DisposeAsync();
     }
-    
-    
-   
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+
+    public async Task ResetDatabaseAsync()
     {
-        Environment.SetEnvironmentVariable("ConnectionStrings:Postgres", _postgresSqlContainer.GetConnectionString());
+        await _respawner.ResetAsync(_dbConnection);
+    }
+
+protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        Environment.SetEnvironmentVariable("ConnectionStrings:Postgres", "Host=localhost;Port=5432;Database=MedicalVisits;Username=postgres;Password=admin");
+    }
+
+    private async Task InitializeRespawnerAsync()
+    {
+        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
+        {
+            SchemasToInclude = [ "medicalapp" ],
+            DbAdapter = DbAdapter.Postgres
+        });
     }
 }
