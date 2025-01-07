@@ -181,6 +181,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
+
 Log.Information("Application is running!");
 
 app.UseSwagger();
