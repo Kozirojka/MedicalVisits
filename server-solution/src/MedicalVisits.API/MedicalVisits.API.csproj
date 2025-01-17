@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.33.0.8-beta" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.33.0.8-beta" />
     <PackageReference Include="FluentAssertions" Version="8.0.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />

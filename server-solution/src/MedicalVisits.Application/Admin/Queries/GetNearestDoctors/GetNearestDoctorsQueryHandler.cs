@@ -5,6 +5,7 @@ using MedicalVisits.Application.Admin.Queries.GetAllDoctors;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Models.diraction;
 using MedicalVisits.Models.diraction.models;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalVisits.Application.Admin.Queries.GetNearestDoctors;
 
-public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQuery, List<GetNearestDoctorsQueryHandler.DoctorProfileWithDistance>>
+public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQuery, List<DoctorProfileWithDistance>>
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _dbContext;
@@ -128,12 +129,5 @@ public class GetNearestDoctorsQueryHandler : IRequestHandler<GetNearestDoctorsQu
         return doctorDistances.OrderBy(d => d.Distance).ToList();
         
     }
-    public class DoctorProfileWithDistance
-    {
-        public double Distance { get; set; } 
-        public string DoctorId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Specialization { get; set; } 
-    }
+    
 }

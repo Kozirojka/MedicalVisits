@@ -61,12 +61,12 @@ public class AdminController : BaseController
         try
         {
                 var result = await _Mediator.Send(new GetPatientQuery());
-
+        
                 if (result == null)
                 {
                     return BadRequest("some troulee");
                 }
-
+        
                 return Ok(result);
                 
         }
@@ -111,8 +111,7 @@ public class AdminController : BaseController
             {
                 return BadRequest();
             }
-            
-            
+
             return Ok(result);
         }
         catch (Exception e)
@@ -121,7 +120,6 @@ public class AdminController : BaseController
             throw;
         }
     }
-    
     
     [HttpPost("Attach-VisitRequest")]
     public async Task<IActionResult> AttachVisitResultToDoctor(InformationAboutVisitAndDoctorDTo dto)
@@ -174,22 +172,22 @@ public class AdminController : BaseController
     }
     
     //потрібно поправити, так, щоб передавалась, id пацієнта, і уже на основі цього id запиту буде визначатись адреса 
-    [HttpGet("Nearest-Doctor/{RequestId}")]  
-    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int requestId) 
+    [HttpGet("Nearest-Doctor/{VisitRequestId}")]  
+    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int VisitRequestId) 
     {
-        if (requestId <= 0)  
+        if (VisitRequestId <= 0)  
         {
             return BadRequest("Ідентифікатор запиту повинен бути більше 0.");
         }
 
         try 
         {
-            var query = new GetNearestDoctorsQuery(requestId);
+            var query = new GetNearestDoctorsQuery(VisitRequestId);
             var result = await _Mediator.Send(query); 
 
             if (result == null)
             {
-                return NotFound($"Не знайдено результатів для запиту з ID: {requestId}");
+                return NotFound($"Не знайдено результатів для запиту з ID: {VisitRequestId}");
             }
 
             return Ok(result);
