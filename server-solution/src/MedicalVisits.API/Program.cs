@@ -1,5 +1,6 @@
 using System.Text;
 using MedicalVisits.API;
+using MedicalVisits.API.Extension;
 using MedicalVisits.Application.Auth.Commands.CreatePatient;
 using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
@@ -84,6 +85,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddMongoDbServiceExtension(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
     {

@@ -21,8 +21,8 @@ public class ChatHub : Hub
         _logger.LogInformation($"Enter in room message on {chatId}");
         
         await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
-        await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", "System",
-            $"'{Context.ConnectionId} has been connected to chat");
+        // await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", "System",
+        //     $"'{Context.ConnectionId} has been connected to chat");
     }
 
 

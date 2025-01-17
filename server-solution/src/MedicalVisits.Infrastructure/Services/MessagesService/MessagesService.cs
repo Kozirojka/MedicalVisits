@@ -1,31 +1,24 @@
-﻿using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Models.Configurations;
+﻿using MedicalVisits.Infrastructure.Persistence.MongoDb;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.EntitiesMongoDb;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace MedicalVisits.Infrastructure.Services.MessagesService;
 
 public class MessagesService : IMessagesService
 {
-    private readonly IMongoCollection<Message> _messages;
+    private readonly MongoDbContext _messages;
 
-    public MessagesService(IOptions<MessageDatabaseSettings> messageDatabaseSettings)
+    public MessagesService(MongoDbContext messages)
     {
-        
-        var mongoClient = new MongoClient(messageDatabaseSettings.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(messageDatabaseSettings.Value.DatabaseName);
-
-        _messages = mongoDatabase.GetCollection<Message>(
-            messageDatabaseSettings.Value.MessageCollectionName
-        );
+        _messages = messages;
     }
 
     public async Task AddMessageAsync(Message message)
     {
         try
         {
-            await _messages.InsertOneAsync(message);
+            await _messages.Messages.InsertOneAsync(message);
             Console.WriteLine("Message successfully added!");
         }
         catch (Exception ex)
@@ -35,12 +28,9 @@ public class MessagesService : IMessagesService
         }
     }
 
-
     public async Task<List<Message>> GetAllRelatedToChatIdMessagesAsync(int chatId)
     {
-        var cursor =  await _messages.FindAsync(x => x.ChatId == chatId);
-        
+        var cursor = await _messages.Messages.FindAsync(x => x.ChatId == chatId);
         return await cursor.ToListAsync();
     }
-    
 }
