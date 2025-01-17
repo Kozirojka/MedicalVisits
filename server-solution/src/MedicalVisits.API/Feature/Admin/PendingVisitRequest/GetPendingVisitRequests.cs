@@ -10,7 +10,7 @@ public class GetPendingVisitRequests(IMediator mediator) : EndpointWithoutReques
 {
     public override void Configure()
     {
-        Get("/api/v2/admin/VisitsRequest");
+        Get("/api/v2/admin/visit-requests");
         Roles("Admin");
     }
 

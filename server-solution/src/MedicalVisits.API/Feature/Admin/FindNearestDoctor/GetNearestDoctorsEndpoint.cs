@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace MedicalVisits.API.Feature.Admin.FindNearestDoctor;
 
 public class GetNearestDoctorsEndpoint(IMediator _mediator) : EndpointWithoutRequest<
-    Results<Ok<List<DoctorProfileWithDistance>>, NotFound, ProblemDetails>>
+    Results<Ok<List<DoctorProfileWithDistance>>, 
+        NotFound,
+        ProblemDetails>>
 {
     public override void Configure()
     {
-        Get("/api/admin/Nearest-Doctor/{RequestId}"); 
+        Get("/api/admin/doctors/nearest/{RequestId}"); 
         Roles("Admin");
     }
 

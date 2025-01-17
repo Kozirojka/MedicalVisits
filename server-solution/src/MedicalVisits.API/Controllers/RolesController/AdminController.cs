@@ -132,7 +132,7 @@ public class AdminController : BaseController
                 VisitRequestId = dto.VisitId
             };
 
-            resultOfAttach result = await _Mediator.Send(command);
+            ResultOfAttach result = await _Mediator.Send(command);
 
             if (result == null)
             {

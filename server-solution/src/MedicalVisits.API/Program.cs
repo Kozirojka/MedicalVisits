@@ -1,5 +1,6 @@
 using System.Text;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using MedicalVisits.API;
 using MedicalVisits.API.Extension;
 using MedicalVisits.Application.Auth.Commands.CreatePatient;
@@ -30,15 +31,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.Configure<MessageDatabaseSettings>(builder.Configuration.GetSection("MessageDatabaseSettings"));
 builder.Services.AddFastEndpoints();
+builder.Services.SwaggerDocument();
 builder.Services.AddSingleton<IMessagesService, MessagesService>();
 
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
-
-
-// Потрібно для того, щоб потім легко найти
-// всі контролери які знаходяться в одній збірці з IApiMarker
-builder.Services.AddControllers().AddApplicationPart(typeof(IApiMarker).Assembly);
 
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
@@ -198,6 +195,10 @@ app.UseSwaggerUI(c =>
 app.UseCors("AllowSpecificOrigin");
 
 app.UseFastEndpoints();
+app.UseSwaggerGen();
+
+
+
 app.MapHub<ChatHub>("/ChatHub");
 
 app.UseHttpsRedirection();

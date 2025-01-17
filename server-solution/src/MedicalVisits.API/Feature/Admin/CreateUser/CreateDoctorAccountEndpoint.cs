@@ -9,7 +9,7 @@ public class CreateDoctorAccountEndpoint(IMediator _mediator) : Endpoint<Registe
 {
     public override void Configure()
     {
-        Post("/api/v2/doctors"); 
+        Post("/api/v2/doctor"); 
         Roles("Admin");      
     }
 
