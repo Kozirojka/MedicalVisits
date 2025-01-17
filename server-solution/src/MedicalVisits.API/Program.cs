@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,18 +57,19 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));
 
-// Log.Logger = new LoggerConfiguration()
-//     .MinimumLevel.Information()
-//     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
-//     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
-//     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
-//     .WriteTo.Console() 
-//     .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
-//     .Enrich.FromLogContext()
-//     .CreateLogger();
-//
-//
-// builder.Host.UseSerilog();
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
+    .WriteTo.Console() 
+    .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+builder.Services.AddLogging();
 
 
 
@@ -196,7 +198,8 @@ app.UseCors("AllowSpecificOrigin");
 app.MapHub<ChatHub>("/ChatHub");
 
 app.UseHttpsRedirection();
-app.UseAuthorization(); 
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

@@ -6,6 +6,7 @@ using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Patient.Command;
 using MedicalVisits.Application.Patient.Command.CreateVisitRequest;
 using MedicalVisits.Application.Patient.Queries.GetAllVisitHistory;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Infrastructure.Services.UsersService;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
@@ -21,9 +22,9 @@ namespace MedicalVisits.API.Controllers.RolesController;
 public class PatientController : BaseController
 {
 
-    private readonly Logger<PatientController> _logger;
-    private readonly UserService _userService;
-    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager, Logger<PatientController> logger, UserService userService) : base(mediator, userManager)
+    private readonly ILogger<PatientController> _logger;
+    private readonly IUserService _userService;
+    public PatientController(IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<PatientController> logger, IUserService userService) : base(mediator, userManager)
     {
         _logger = logger;
         _userService = userService;

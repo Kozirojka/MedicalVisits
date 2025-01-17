@@ -61,7 +61,7 @@ public class AuthController : BaseController
             if (result == null)
                 return BadRequest("I fuck your life its null");
 
-            return Ok("every thing is "  + result);
+            return Ok(result);
         }
         catch (Exception ex)
         {
