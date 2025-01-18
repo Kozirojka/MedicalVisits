@@ -173,7 +173,7 @@ public class AdminController : BaseController
     
     //потрібно поправити, так, щоб передавалась, id пацієнта, і уже на основі цього id запиту буде визначатись адреса 
     [HttpGet("Nearest-Doctor/{VisitRequestId}")]  
-    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "RequestId")] int VisitRequestId) 
+    public async Task<IActionResult> GetListOfNearestDoctors([FromRoute(Name = "VisitRequestId")] int VisitRequestId) 
     {
         if (VisitRequestId <= 0)  
         {

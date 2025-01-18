@@ -13,29 +13,30 @@ public class GetNearestDoctorsEndpoint(IMediator _mediator) : EndpointWithoutReq
 {
     public override void Configure()
     {
-        Get("/api/admin/doctors/nearest/{RequestId}"); 
+        Get("/api/admin/doctors/nearest/{VisitRequestId}"); 
         Roles("Admin");
     }
 
-    public override async Task HandleAsync(CancellationToken cancellationToken)
+    public override async Task<Results<Ok<List<DoctorProfileWithDistance>>, 
+        NotFound, ProblemDetails>> 
+        ExecuteAsync(CancellationToken cancellationToken)
     {
-        var requestId = Route<int>("RequestId");
+        var requestId = Route<int>("VisitRequestId");
 
         if (requestId == null)
         {
-            await SendAsync(TypedResults.NotFound(), cancellation: cancellationToken);
-            return;
+            return TypedResults.NotFound();
         }
         
         var query = new GetNearestDoctorsQuery(requestId);
         var result = await _mediator.Send(query, cancellationToken);
-
+        
         if (result == null || result.Count == 0)
         {
-            await SendAsync(TypedResults.NotFound(), cancellation: cancellationToken);
-            return;
+            
+            return TypedResults.NotFound();
         }
 
-        await SendAsync(TypedResults.Ok(result), cancellation: cancellationToken);
+        return TypedResults.Ok(result);
     }
 }   
