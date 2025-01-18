@@ -77,9 +77,9 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
             patient.Longitude = point.Longitude;
         }
         
-        var Doctor = await _userManager.FindByIdAsync(request.DoctorId);
+        var doctor = await _userManager.FindByIdAsync(request.DoctorId);
         
-        var startPointOfDoctor = await _geocodingService.GeocodeAddressAsync(Doctor.Address);
+        var startPointOfDoctor = await _geocodingService.GeocodeAddressAsync(doctor.Address);
         
         var resultOfOptimized = await _routeService.GetOptimizedRouteAsync(new Coordinate()
         {

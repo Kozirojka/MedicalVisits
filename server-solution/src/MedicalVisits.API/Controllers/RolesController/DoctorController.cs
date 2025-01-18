@@ -86,7 +86,7 @@ public class DoctorController : BaseController
     }
     
     
-    
+    // візит вважається підтвержнний якщо він був у AssignDoctorToVisit function
     //todo: пристосувати цю функцію, під наш розкад, потрібно добавити у повернення інформацію про TimeSlots
     //Timeslot якщо він підтверджений має інформацію про візит
     [HttpGet("visits/confirmed")]
