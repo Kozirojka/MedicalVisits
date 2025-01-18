@@ -23,7 +23,7 @@ public class GetNearestDoctorsEndpoint(IMediator _mediator) : EndpointWithoutReq
 
         if (requestId == null)
         {
-            await SendAsync(TypedResults.NotFound());
+            await SendAsync(TypedResults.NotFound(), cancellation: cancellationToken);
             return;
         }
         
@@ -32,10 +32,10 @@ public class GetNearestDoctorsEndpoint(IMediator _mediator) : EndpointWithoutReq
 
         if (result == null || result.Count == 0)
         {
-            await SendAsync(TypedResults.NotFound());
+            await SendAsync(TypedResults.NotFound(), cancellation: cancellationToken);
             return;
         }
 
-        await SendAsync(TypedResults.Ok(result));
+        await SendAsync(TypedResults.Ok(result), cancellation: cancellationToken);
     }
 }   
