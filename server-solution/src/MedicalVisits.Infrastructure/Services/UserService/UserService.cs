@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 
-namespace MedicalVisits.Infrastructure.Services.UsersService;
+namespace MedicalVisits.Infrastructure.Services.UserService;
 
 public class UserService : IUserService
 {

@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using MedicalVisits.API.Controllers.Base;
+using MedicalVisits.API.SignalR.Hubs;
 using MedicalVisits.Application.Admin.Queries.GetAllUser;
 using MedicalVisits.Application.Chat.CreatePrivateChat;
 using MedicalVisits.Application.Chat.Queries.GetAllRelatedChat;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Infrastructure.SignalR.Hubs;
+using MedicalVisits.Infrastructure.Services.MessagesService;
 using MedicalVisits.Models.Dtos.AuthDto;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;

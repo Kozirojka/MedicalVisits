@@ -1,12 +1,11 @@
 ﻿using System.Security.Claims;
 using MedicalVisits.Infrastructure.Services.Interfaces;
+using MedicalVisits.Infrastructure.Services.MessagesService;
 using MedicalVisits.Models.EntitiesMongoDb;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
 
-namespace MedicalVisits.Infrastructure.SignalR.Hubs;
+namespace MedicalVisits.API.SignalR.Hubs;
 
 [Authorize]
 public class ChatHub : Hub

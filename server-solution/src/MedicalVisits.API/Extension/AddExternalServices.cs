@@ -1,7 +1,8 @@
-﻿using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
+﻿using MedicalVisits.Infrastructure.Services.CustomeUserIdProvider;
+using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Infrastructure.Services.MessagesService;
-using MedicalVisits.Infrastructure.Services.UsersService;
+using MedicalVisits.Infrastructure.Services.UserService;
 using Microsoft.AspNetCore.SignalR;
 
 namespace MedicalVisits.API.Extension;

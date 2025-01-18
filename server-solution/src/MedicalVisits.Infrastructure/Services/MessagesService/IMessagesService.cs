@@ -1,6 +1,6 @@
 ﻿using MedicalVisits.Models.EntitiesMongoDb;
 
-namespace MedicalVisits.Infrastructure.Services.Interfaces;
+namespace MedicalVisits.Infrastructure.Services.MessagesService;
 
 public interface IMessagesService
 {

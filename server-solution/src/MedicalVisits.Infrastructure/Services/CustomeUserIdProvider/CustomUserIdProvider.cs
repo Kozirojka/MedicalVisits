@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 
-namespace MedicalVisits.Infrastructure.Services.UsersService;
+namespace MedicalVisits.Infrastructure.Services.CustomeUserIdProvider;
 
 
 public class CustomUserIdProvider : IUserIdProvider
