@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using MediatR;
+﻿using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.diraction.models;
@@ -32,7 +31,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         
 
         var visits = _dbContext.DoctorIntervals
-            .Where(ts => ts.DoctorSchedules.DoctorId == request.DoctorId)
+            .Where(ts => ts.DoctorSchedules.Doctor.User.Id == request.DoctorId)
             .Where(ts => ts.VisitRequestId != null)
             .Include(ts => ts.VisitRequest)
             .ThenInclude(v => v.Patient)

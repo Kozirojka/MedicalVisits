@@ -2,13 +2,18 @@
 using FastEndpoints;
 using MediatR;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MedicalVisits.API.Feature.Doctor.MedicalVisits.AssignDoctorToVisit;
 
 
-
-public class AssignDoctorToVisitEndpoint(IMediator mediator) : EndpointWithoutRequest<
+/// <summary>
+/// This method will assign doctor to visits
+/// One doctor and assign himself to visit
+/// </summary>
+/// <param name="mediator"></param>
+public class AssignDoctorToVisitEndpoint(IMediator mediator, IUserService userService) : EndpointWithoutRequest<
     Results<Ok<AssignmentResult>,
     NotFound,
     ProblemDetails>>
@@ -25,7 +30,7 @@ public class AssignDoctorToVisitEndpoint(IMediator mediator) : EndpointWithoutRe
         var visitRequestId = Route<int>("visitId");
         var scheduleId = Route<int>("scheduleId");
         
-        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var doctorId = userService.GetUserId(HttpContext.User);
 
         var command = new AssignDoctorToVisitCommand(visitRequestId, doctorId, scheduleId);
 

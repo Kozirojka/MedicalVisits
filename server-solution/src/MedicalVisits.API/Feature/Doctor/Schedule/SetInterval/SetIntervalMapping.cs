@@ -1,7 +1,6 @@
-﻿using MedicalVisits.API.Feature.Doctor.Schedule.v2.SetInterval;
-using MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
+﻿using MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
 
-namespace MedicalVisits.API.Feature.Doctor.Schedule.v2;
+namespace MedicalVisits.API.Feature.Doctor.Schedule.SetInterval;
 
 public static class SetIntervalMapping
 {

@@ -3,7 +3,7 @@ using MediatR;
 using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace MedicalVisits.API.Feature.Doctor.Schedule.v2.SetInterval;
+namespace MedicalVisits.API.Feature.Doctor.Schedule.SetInterval;
 
 public sealed record SetIntervalRequest(List<DoctorIntervals> DoctorIntervals);
 

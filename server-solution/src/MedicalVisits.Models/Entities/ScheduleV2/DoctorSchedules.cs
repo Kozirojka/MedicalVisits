@@ -5,7 +5,7 @@ public class DoctorSchedules
     public int Id { get; set; }
     
     public DoctorProfile Doctor { get; set; }
-    public string DoctorId { get; set; }
+    public int DoctorId { get; set; }
     
     public DayOfWeek DayOfWeek { get; set; }
     

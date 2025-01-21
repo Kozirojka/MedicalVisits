@@ -7,6 +7,6 @@ public class UserService : IUserService
 {
     public string? GetUserId(ClaimsPrincipal? user)
     {
-        return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return  user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 }

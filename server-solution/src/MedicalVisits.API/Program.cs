@@ -1,26 +1,16 @@
 using System.Text;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using MedicalVisits.API;
 using MedicalVisits.API.Extension;
 using MedicalVisits.API.SignalR.Hubs;
-using MedicalVisits.Application.Auth.Commands.CreatePatient;
-using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
-using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Infrastructure.Persistence;
-using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
-using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Infrastructure.Services.MessagesService;
 using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
