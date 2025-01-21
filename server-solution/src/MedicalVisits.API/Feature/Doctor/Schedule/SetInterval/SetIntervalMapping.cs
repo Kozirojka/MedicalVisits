@@ -1,5 +1,5 @@
 ﻿using MedicalVisits.API.Feature.Doctor.Schedule.v2.SetInterval;
-using MedicalVisits.Application.Doctor.Command.v2.SetInterval;
+using MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
 
 namespace MedicalVisits.API.Feature.Doctor.Schedule.v2;
 

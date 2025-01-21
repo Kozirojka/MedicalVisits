@@ -1,12 +1,10 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Entities.ChatEntities;
-using MedicalVisits.Models.Entities.Schedule;
 using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace MedicalVisits.Infrastructure.Persistence;
 
@@ -21,8 +19,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VisitRequest> VisitRequests { get; set; }
     public DbSet<PatientProfile> PatientProfiles { get; set; }
     public DbSet<DoctorProfile> DoctorProfiles { get; set; }
-    public DbSet<TimeSlot> TimeSlots { get; set; }
-    public DbSet<ScheduleWorkPlan> ScheduleWorkPlans { get; set; }
     public DbSet<Chat> Chats { get; set; }
     public DbSet<ChatParticipants> ChatParticipants { get; set; }  
     

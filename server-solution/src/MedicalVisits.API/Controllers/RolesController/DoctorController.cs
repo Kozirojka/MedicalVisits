@@ -1,15 +1,12 @@
 ﻿using System.Security.Claims;
 using MediatR;
 using MedicalVisits.API.Controllers.Base;
-using MedicalVisits.Application.Doctor.Command.AddSlotToSchedule;
 using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
-using MedicalVisits.Application.Doctor.Command.CreateScheduleWithSlots;
 using MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 using MedicalVisits.Application.Doctor.Queries.GetMedicalCard;
 using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Dtos;
-using MedicalVisits.Models.Dtos.Schedule;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -100,49 +97,6 @@ public class DoctorController : BaseController
         
         return Ok(result);
     }
-
-
-    /// <summary>
-    /// 👨‍⚕️ Функція потрібна для того, щоб встановлювати графік лікаря
-    /// І після створення графіку встановлювати часові рамки
-    /// тоді коли лікар зможе прийняти пацієнта (TimeSlot)
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost("set/scheduleSlots")]
-    public async Task<IActionResult> SetScheduleAndSlots(ScheduleRequest dto)
-    {
-        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var command = new CreateScheduleWithSlotsCommand(dto, doctorId);
-        
-        var result = await _Mediator.Send(command);
-        
-        return Ok(result);
-    }
-
-
-    
-    /// <summary>
-    /// Додавання слота до вже існуючих
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="sceduleId"></param>
-    /// <returns></returns>
-    [HttpPost("set/slot")]
-    public async Task<IActionResult> AddSlotRequest(List<TimeSlotDto> dto, int sceduleId)
-    {
-
-        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var command = new AddSlotScheduleCommand(dto, sceduleId);
-        
-        var result = await _Mediator.Send(command);
-        
-        
-        return Ok(result);
-    }
-
 
     [HttpGet("medical-card")]
     public async Task<IActionResult> GetMedicalCard()

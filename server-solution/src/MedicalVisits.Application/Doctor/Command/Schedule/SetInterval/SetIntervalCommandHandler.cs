@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
 
-namespace MedicalVisits.Application.Doctor.Command.v2.SetInterval;
+namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
 
 public class SetIntervalCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<SetIntervalCommand, bool>
 {

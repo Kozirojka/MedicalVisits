@@ -14,4 +14,11 @@ public class DoctorIntervals
     
     public VisitRequest? VisitRequest { get; set; }
     public int? VisitRequestId { get; set; }
+
+
+
+    public void SetVisitRequest(int RequestId)
+    {
+        VisitRequestId = RequestId;
+    }
 }

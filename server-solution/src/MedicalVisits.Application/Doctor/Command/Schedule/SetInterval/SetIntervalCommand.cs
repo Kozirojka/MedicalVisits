@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MedicalVisits.Models.Entities.ScheduleV2;
 
-namespace MedicalVisits.Application.Doctor.Command.v2.SetInterval;
+namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
 
 public class SetIntervalCommand : IRequest<bool>
 {
