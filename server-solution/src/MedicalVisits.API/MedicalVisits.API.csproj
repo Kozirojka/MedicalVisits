@@ -36,6 +36,11 @@
     <ProjectReference Include="..\MedicalVisits.Models\MedicalVisits.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Feature\Doctor\Schedule\v1\" />
+    <Folder Include="Feature\Doctor\Schedule\v2\" />
+  </ItemGroup>
+
 
 
 </Project>

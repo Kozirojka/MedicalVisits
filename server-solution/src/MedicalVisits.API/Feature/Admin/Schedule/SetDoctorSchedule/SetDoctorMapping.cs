@@ -8,9 +8,7 @@ public static class SetDoctorScheduleMappingExtensions
     {
         return new SetDoctorScheduleCommand
         {
-            DoctorId = request.DoctorId,
-            StartDate = request.StartDate,
-            EndDate = request.EndDate
+            DoctorSchedules = request.SchedulesList
         };
     }
 }

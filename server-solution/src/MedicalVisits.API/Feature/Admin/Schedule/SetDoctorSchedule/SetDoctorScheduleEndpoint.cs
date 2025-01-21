@@ -1,15 +1,16 @@
 ﻿using FastEndpoints;
 using MediatR;
 using MedicalVisits.Application.Admin.Command.SetDoctorSchedule;
+using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MedicalVisits.API.Feature.Admin.Schedule.SetDoctorSchedule;
 
-public sealed record SetDoctorScheduleRequest(string DoctorId, DateTime StartDate, DateTime EndDate);
+public sealed record SetDoctorScheduleRequest(List<DoctorSchedules> SchedulesList);
 
 
 
-public class SetDoctorScheduleEndpoint(IMediator _mediator) : Endpoint<SetDoctorScheduleRequest, Results<Ok<bool>, NotFound, ProblemDetails>>
+public class SetDoctorScheduleEndpoint(IMediator mediator) : Endpoint<SetDoctorScheduleRequest, Results<Ok<bool>, NotFound, ProblemDetails>>
 {
     
     
@@ -23,7 +24,7 @@ public class SetDoctorScheduleEndpoint(IMediator _mediator) : Endpoint<SetDoctor
     {
         var command = req.ToCommand();
         
-        var result = await _mediator.Send(command, ct);
+        var result = await mediator.Send(command, ct);
         
         if (result == null)
         {

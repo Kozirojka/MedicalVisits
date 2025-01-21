@@ -2,6 +2,7 @@
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Entities.ChatEntities;
 using MedicalVisits.Models.Entities.Schedule;
+using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -25,10 +26,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Chat> Chats { get; set; }
     public DbSet<ChatParticipants> ChatParticipants { get; set; }  
     
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
+    
+    public DbSet<DoctorIntervals> DoctorIntervals { get; set; }
+    public DbSet<DoctorSchedules> DoctorSchedules { get; set; }
     
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -43,7 +43,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.ApplyConfiguration(new PatientProfileConfiguration());
         builder.ApplyConfiguration(new ScheduleConfiguation());
         builder.ApplyConfiguration(new TimeSlotConfiguration());
-        
+        builder.ApplyConfiguration(new DoctorIntervalsConfigurationV2());
+        builder.ApplyConfiguration(new SchedulesConfigurationV2());
         
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole

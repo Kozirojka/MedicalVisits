@@ -33,4 +33,10 @@
       <ProjectReference Include="..\MedicalVisits.Models\MedicalVisits.Models.csproj" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Folder Include="Doctor\Command\v1\" />
+      <Folder Include="Doctor\Command\v2\" />
+    </ItemGroup>
+
 </Project>

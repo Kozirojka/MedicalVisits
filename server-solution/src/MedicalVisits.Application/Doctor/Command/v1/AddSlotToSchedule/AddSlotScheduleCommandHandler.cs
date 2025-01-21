@@ -40,7 +40,7 @@ public class AddSlotScheduleCommandHandler : IRequestHandler<AddSlotScheduleComm
             }).ToList();
 
         
-        schedule.AddTimeSlot(timeSlots);
+        schedule?.AddTimeSlot(timeSlots);
 
 
         var result = await _dbContext.SaveChangesAsync(cancellationToken);

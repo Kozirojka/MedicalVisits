@@ -27,7 +27,7 @@ public class ScheduleWorkPlan
     public ApplicationUser User { get; set; } = null!;
     public string NameOfSchedule { get; set; } = null!;
     public ICollection<TimeSlot> TimeSlots { get; set; }
-
+    
     public ScheduleWorkPlan()
     {
         TimeSlots = new List<TimeSlot>();
