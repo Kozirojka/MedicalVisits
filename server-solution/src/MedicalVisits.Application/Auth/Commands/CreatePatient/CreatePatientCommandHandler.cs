@@ -34,7 +34,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        Console.WriteLine($"-------------{request.DriverRequest.Address.Country}----------------------------");
         
         if (string.IsNullOrWhiteSpace(request.DriverRequest.Email) ||
             string.IsNullOrWhiteSpace(request.DriverRequest.Password) ||
@@ -64,7 +63,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             FirstName = request.DriverRequest.FirstName,
             LastName = request.DriverRequest.LastName,
             
-            //Value Object like in ddd
             Address = request.DriverRequest.Address
         };
         
@@ -90,7 +88,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        // Генерація access token
         string token;
         try
         {
@@ -122,7 +119,7 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
         }
         catch (Exception ex)
         {
-            await _userManager.DeleteAsync(user); // Відкат створення користувача
+            await _userManager.DeleteAsync(user); 
             return new AuthResult
             {
                 Succeeded = false,
@@ -130,7 +127,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        // Генерація refresh token
         string refreshToken;
         try
         {
@@ -150,7 +146,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        // Оновлення користувача з refresh token
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
         var updateResult = await _userManager.UpdateAsync(user);
@@ -163,7 +158,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        // Фінальна перевірка перед поверненням результату
         if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(refreshToken))
         {
             return new AuthResult
@@ -173,7 +167,6 @@ public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand,
             };
         }
 
-        // Успішне завершення
         return new AuthResult
         {
             Succeeded = true,

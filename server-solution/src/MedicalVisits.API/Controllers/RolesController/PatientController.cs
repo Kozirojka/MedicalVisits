@@ -7,7 +7,6 @@ using MedicalVisits.Application.Patient.Command;
 using MedicalVisits.Application.Patient.Command.CreateVisitRequest;
 using MedicalVisits.Application.Patient.Queries.GetAllVisitHistory;
 using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Infrastructure.Services.UsersService;
 using MedicalVisits.Models.Dtos;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authorization;

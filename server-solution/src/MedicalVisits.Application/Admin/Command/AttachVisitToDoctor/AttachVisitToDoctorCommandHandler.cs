@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MedicalVisits.Application.Admin.Command.AttachVisitToDoctor;
 
-public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDoctorCommand, resultOfAttach>
+public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDoctorCommand, ResultOfAttach>
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMediator _mediator;
@@ -20,7 +20,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
         _context = context;
     }
 
-    public async Task<resultOfAttach> Handle(AttachVisitToDoctorCommand request, CancellationToken cancellationToken)
+    public async Task<ResultOfAttach> Handle(AttachVisitToDoctorCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -35,7 +35,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
             
             if (visit == null)
             {
-                return new resultOfAttach
+                return new ResultOfAttach
                 {
                     Result = false,
                     Message = "VisitRequest not found"
@@ -51,7 +51,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new resultOfAttach
+            return new ResultOfAttach
             {
                 Result = true,
                 Message = "Doctor assigned successfully"
@@ -63,7 +63,7 @@ public class AttachVisitToDoctorCommandHandler : IRequestHandler<AttachVisitToDo
             Console.WriteLine($"Error in Handle method: {ex.Message}");
             Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
-            return new resultOfAttach
+            return new ResultOfAttach
             {
                 Result = false,
                 Message = "An error occurred while assigning the doctor"

@@ -42,10 +42,10 @@ public class AssignDoctorToVisitCommandHandler : IRequestHandler<AssignDoctorToV
         }
         result.Status = VisitStatus.DoctorAccepted;
 
-        var visit = _dbContext.TimeSlots.SingleOrDefault(u => u.Id == request.SlotTimeId);
+        var visit = _dbContext.DoctorIntervals.SingleOrDefault(u => u.Id == request.SlotTimeId);
         
         visit?.SetVisitRequest(request.VisitId);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
         
         
         return new AssignmentResult

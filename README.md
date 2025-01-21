@@ -1,3 +1,13 @@
+# ⚠️ ATTENTION ATTENTION ⚠️
+
+Until **commit #99**, the entire backend was implemented using **MVC API Controllers**.  
+Starting from **commit #100**, the project is being migrated to **FastEndpoints**,  
+where the vertical architecture will be significantly improved.
+
+The **last stable version before the migration to FastEndpoints** is available here:  
+👉 [MedicalVisits MVP 0.4](https://github.com/Kozirojka/MedicalVisits/releases/tag/mvp0.4)
+
+
 ## 🚀 MedOnWay
 **Effortless access to healthcare from home**
 

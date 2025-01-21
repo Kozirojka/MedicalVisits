@@ -17,7 +17,7 @@ namespace MedicalVisits.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -98,35 +98,15 @@ namespace MedicalVisits.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "45e6a81c-a766-45cf-b8ff-ca0c8a9c477b",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "81c1aaff-cc44-4fc8-a3b9-428261f4f202",
-                            Email = "admin@medicalvisits.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
-                            NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOWOla5e4Q8t2SKTHliFekkGK/c1QjoS20db+ut5B8g1K4cKqNmDZNsrHUFF526Fkg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "f49b4cd7-598f-46dd-b1cf-d1cc61526529",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@medicalvisits.com"
-                        });
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.ChatEntities.Chat", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -224,7 +204,7 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.ToTable("PatientProfiles");
                 });
 
-            modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", b =>
+            modelBuilder.Entity("MedicalVisits.Models.Entities.ScheduleV2.DoctorIntervals", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -232,22 +212,33 @@ namespace MedicalVisits.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NameOfSchedule")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("DoctorId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("DoctorScheduleId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EndInterval")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartInterval")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("VisitRequestId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("DoctorId");
 
-                    b.ToTable("ScheduleWorkPlans");
+                    b.HasIndex("DoctorScheduleId");
+
+                    b.HasIndex("VisitRequestId");
+
+                    b.ToTable("DoctorIntervals");
                 });
 
-            modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.TimeSlot", b =>
+            modelBuilder.Entity("MedicalVisits.Models.Entities.ScheduleV2.DoctorSchedules", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,29 +246,23 @@ namespace MedicalVisits.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("RequestId")
+                    b.Property<int>("DayOfWeek")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("WorkPlanId")
+                    b.Property<bool?>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MinimumAppointments")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RequestId")
-                        .IsUnique();
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex("WorkPlanId");
-
-                    b.ToTable("TimeSlots");
+                    b.ToTable("DoctorSchedules");
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.VisitRequest", b =>
@@ -473,13 +458,6 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "45e6a81c-a766-45cf-b8ff-ca0c8a9c477b",
-                            RoleId = "1"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -591,32 +569,39 @@ namespace MedicalVisits.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", b =>
+            modelBuilder.Entity("MedicalVisits.Models.Entities.ScheduleV2.DoctorIntervals", b =>
                 {
-                    b.HasOne("MedicalVisits.Models.Entities.ApplicationUser", "User")
+                    b.HasOne("MedicalVisits.Models.Entities.DoctorProfile", "Doctor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MedicalVisits.Models.Entities.ScheduleV2.DoctorSchedules", "DoctorSchedules")
+                        .WithMany()
+                        .HasForeignKey("DoctorScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("MedicalVisits.Models.Entities.VisitRequest", "VisitRequest")
+                        .WithMany()
+                        .HasForeignKey("VisitRequestId");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("DoctorSchedules");
+
+                    b.Navigation("VisitRequest");
                 });
 
-            modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.TimeSlot", b =>
+            modelBuilder.Entity("MedicalVisits.Models.Entities.ScheduleV2.DoctorSchedules", b =>
                 {
-                    b.HasOne("MedicalVisits.Models.Entities.VisitRequest", "Request")
-                        .WithOne()
-                        .HasForeignKey("MedicalVisits.Models.Entities.Schedule.TimeSlot", "RequestId");
-
-                    b.HasOne("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", "WorkPlan")
-                        .WithMany("TimeSlots")
-                        .HasForeignKey("WorkPlanId")
+                    b.HasOne("MedicalVisits.Models.Entities.DoctorProfile", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Request");
-
-                    b.Navigation("WorkPlan");
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("MedicalVisits.Models.Entities.VisitRequest", b =>
@@ -705,11 +690,6 @@ namespace MedicalVisits.Infrastructure.Migrations
             modelBuilder.Entity("MedicalVisits.Models.Entities.DoctorProfile", b =>
                 {
                     b.Navigation("visitRequests");
-                });
-
-            modelBuilder.Entity("MedicalVisits.Models.Entities.Schedule.ScheduleWorkPlan", b =>
-                {
-                    b.Navigation("TimeSlots");
                 });
 #pragma warning restore 612, 618
         }

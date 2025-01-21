@@ -3,7 +3,7 @@ using MedicalVisits.Models.Dtos;
 
 namespace MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 
-public class GetPendingRequestsForDoctorCommand : IRequest<List<VisitRequestDtoNew>>
+public class GetPendingRequestsForDoctorCommand : IRequest<List<VisitRequestResponce>>
 {
     public GetPendingRequestsForDoctorCommand(DoctorRequestFilterDto doctor)
     {

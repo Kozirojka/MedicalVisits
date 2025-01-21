@@ -1,11 +1,10 @@
 ﻿using MedicalVisits.Infrastructure.Configurations;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Entities.ChatEntities;
-using MedicalVisits.Models.Entities.Schedule;
+using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace MedicalVisits.Infrastructure.Persistence;
 
@@ -20,15 +19,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VisitRequest> VisitRequests { get; set; }
     public DbSet<PatientProfile> PatientProfiles { get; set; }
     public DbSet<DoctorProfile> DoctorProfiles { get; set; }
-    public DbSet<TimeSlot> TimeSlots { get; set; }
-    public DbSet<ScheduleWorkPlan> ScheduleWorkPlans { get; set; }
     public DbSet<Chat> Chats { get; set; }
     public DbSet<ChatParticipants> ChatParticipants { get; set; }  
     
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
+    
+    public DbSet<DoctorIntervals> DoctorIntervals { get; set; }
+    public DbSet<DoctorSchedules> DoctorSchedules { get; set; }
     
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -41,9 +37,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.ApplyConfiguration(new VisitRequestConfiguration());
         builder.ApplyConfiguration(new DoctorProfileConfiguration());
         builder.ApplyConfiguration(new PatientProfileConfiguration());
-        builder.ApplyConfiguration(new ScheduleConfiguation());
-        builder.ApplyConfiguration(new TimeSlotConfiguration());
-        
+        builder.ApplyConfiguration(new DoctorIntervalsConfigurationV2());
+        builder.ApplyConfiguration(new SchedulesConfigurationV2());
         
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole
@@ -51,60 +46,31 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Id = "1",
                 Name = "Admin",
                 NormalizedName = "ADMIN",
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                ConcurrencyStamp = "ee81f2e5-ca09-4653-81f9-1b88134634fd"
             },
             new IdentityRole
             {
                 Id = "2",
                 Name = "Doctor",
                 NormalizedName = "DOCTOR",
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                ConcurrencyStamp = "96c3cf11-235f-408f-b93d-6138df94cb17"
             },
             new IdentityRole
             {
                 Id = "3",
                 Name = "Patient",
                 NormalizedName = "PATIENT",
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                ConcurrencyStamp = "ed5b1acf-d8bf-46d6-b42e-5e51cbaf9ab4"
             },
             new IdentityRole
             {
                 Id = "4",
                 Name = "Nurse",
                 NormalizedName = "NURSE",
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                ConcurrencyStamp = "905b99f5-8079-48c6-bef9-2af1ded0cba4"
             }
         );
         
-        
-        var hasher = new PasswordHasher<ApplicationUser>();
-        var adminId = Guid.NewGuid().ToString();
-
-        builder.Entity<ApplicationUser>().HasData(
-            new ApplicationUser
-            {
-                Id = adminId,
-                UserName = "admin@medicalvisits.com",
-                NormalizedUserName = "ADMIN@MEDICALVISITS.COM",
-                Email = "admin@medicalvisits.com",
-                NormalizedEmail = "ADMIN@MEDICALVISITS.COM",
-                EmailConfirmed = true,
-                    PasswordHash = hasher.HashPassword(null, "Admin123!"), 
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                FirstName = "Admin",
-                LastName = "User",
-                LockoutEnabled = false
-            }
-        );
-
-        builder.Entity<IdentityUserRole<string>>().HasData(
-            new IdentityUserRole<string>
-            {
-                UserId = adminId,
-                RoleId = "1" 
-            }
-        );
     }
     
 }

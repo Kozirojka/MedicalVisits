@@ -5,6 +5,7 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
  using MedicalVisits.Models.Configurations;
  using MedicalVisits.Models.diraction;
  using MedicalVisits.Models.diraction.models;
+ using MedicalVisits.Models.Entities;
  using Microsoft.Extensions.Options;
  using Newtonsoft.Json;
  using RouteResponse = MedicalVisits.Models.diraction.RouteResponse;
@@ -140,6 +141,11 @@ using MedicalVisits.Infrastructure.Services.Interfaces;
          {
              throw new Exception($"Помилка при обчисленні відстані: {ex.Message}", ex);
          }
+     }
+
+     public Task<List<DoctorProfileWithDistance>> CalculateDistancesAsync(List<DoctorProfile> doctors, Coordinate patientCoordinates)
+     {
+         throw new NotImplementedException();
      }
  }
 

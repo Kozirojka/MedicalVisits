@@ -1,25 +1,16 @@
 using System.Text;
-using MedicalVisits.API;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using MedicalVisits.API.Extension;
-using MedicalVisits.Application.Auth.Commands.CreatePatient;
-using MedicalVisits.Application.Auth.Commands.GenerateAccessToken;
-using MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
+using MedicalVisits.API.SignalR.Hubs;
 using MedicalVisits.Infrastructure.Persistence;
-using MedicalVisits.Infrastructure.Services.GoogleMapsApi;
-using MedicalVisits.Infrastructure.Services.Interfaces;
-using MedicalVisits.Infrastructure.Services.MessagesService;
-using MedicalVisits.Infrastructure.Services.UsersService;
-using MedicalVisits.Infrastructure.SignalR.Hubs;
 using MedicalVisits.Models.Configurations;
 using MedicalVisits.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,47 +20,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.Configure<MessageDatabaseSettings>(builder.Configuration.GetSection("MessageDatabaseSettings"));
 
-builder.Services.AddSingleton<IMessagesService, MessagesService>();
-
-builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
-
-
-// Потрібно для того, щоб потім легко найти
-// всі контролери які знаходяться в одній збірці з IApiMarker
-builder.Services.AddControllers().AddApplicationPart(typeof(IApiMarker).Assembly);
-
-builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssembly(typeof(CreatePatientCommand).Assembly));
-
-builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
-
-
-builder.Services.AddScoped<IGeocodingService, GeocodingService>();
-builder.Services.AddScoped<IRouteService, RouteService>();
-builder.Services.AddScoped<IUserService, UserService>();
-
-builder.Services.AddHttpClient();
-builder.Services.AddSignalR();
-builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>(); 
-
-
 builder.Services.Configure<GoogleMapsServiceSettings>(
     builder.Configuration.GetSection("GoogleMaps"));
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)   
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)  
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) 
-    .WriteTo.Console() 
-    .WriteTo.Seq("http://localhost:5341", restrictedToMinimumLevel: LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .CreateLogger();
+builder.Host.UseSerilogLogging();
+builder.Services.AddFastEndpointsAndMediatR();
+builder.Services.AddMongoDbServiceExtension(builder.Configuration);
+builder.Services.AddSwaggerWithJwtSupport();
+builder.Services.AddExternalServices(builder.Configuration);
 
 
-builder.Host.UseSerilog();
 builder.Services.AddLogging();
 
 
@@ -85,7 +45,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddMongoDbServiceExtension(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
     {
@@ -143,48 +102,9 @@ builder.Services.AddCors(options =>
 });
 
 
-
-
-
-
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Medical Visits API", Version = "v1" });
-    
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
-} );
-
 
 var app = builder.Build();
-
-
 
 Log.Information("Application is running!");
 
@@ -195,6 +115,10 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 app.UseCors("AllowSpecificOrigin");
+
+app.UseFastEndpoints();
+app.UseSwaggerGen();
+
 
 
 app.MapHub<ChatHub>("/ChatHub");

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalVisits.Application.Doctor.Queries.GetPendingVisitRequests;
 
-public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPendingRequestsForDoctorCommand, List<VisitRequestDtoNew>>
+public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPendingRequestsForDoctorCommand, List<VisitRequestResponce>>
 {
     
     public ApplicationDbContext _dbContext;
@@ -21,14 +21,14 @@ public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPend
         _userManager = userManager;
     }
 
-    public async Task<List<VisitRequestDtoNew>> Handle(GetPendingRequestsForDoctorCommand request, CancellationToken cancellationToken)
+    public async Task<List<VisitRequestResponce>> Handle(GetPendingRequestsForDoctorCommand request, CancellationToken cancellationToken)
     {
         var result = await _dbContext.VisitRequests
             .Where(u => request.Doctor.Id.Equals(u.DoctorId)) 
             .Where(u => u.Status == request.Doctor.Status)   
             .ToListAsync(cancellationToken);
 
-        var visitRequestDtos = new List<VisitRequestDtoNew>();
+        var visitRequestDtos = new List<VisitRequestResponce>();
 
         foreach (var vr in result)
         {
@@ -39,7 +39,7 @@ public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPend
  
             var patientAddress = patientProfile?.User?.Address;
 
-            visitRequestDtos.Add(new VisitRequestDtoNew
+            visitRequestDtos.Add(new VisitRequestResponce
             {
                 Id = vr.Id,
                 PatientId = vr.PatientId,
@@ -60,7 +60,7 @@ public class GetPendingRequestsForDoctorCommandHandler : IRequestHandler<GetPend
 
 
 
-public class VisitRequestDtoNew
+public class VisitRequestResponce
 {
     public string PatientId { get; set; }
     public string Description { get; set; }
