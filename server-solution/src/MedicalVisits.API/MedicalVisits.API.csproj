@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Feature\Doctor\Schedule\v1\" />
-    <Folder Include="Feature\Doctor\Schedule\v2\" />
   </ItemGroup>
 
 

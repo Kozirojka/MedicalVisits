@@ -36,7 +36,6 @@
 
     <ItemGroup>
       <Folder Include="Doctor\Command\v1\" />
-      <Folder Include="Doctor\Command\v2\" />
     </ItemGroup>
 
 </Project>

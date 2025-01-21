@@ -41,8 +41,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.ApplyConfiguration(new VisitRequestConfiguration());
         builder.ApplyConfiguration(new DoctorProfileConfiguration());
         builder.ApplyConfiguration(new PatientProfileConfiguration());
-        builder.ApplyConfiguration(new ScheduleConfiguation());
-        builder.ApplyConfiguration(new TimeSlotConfiguration());
         builder.ApplyConfiguration(new DoctorIntervalsConfigurationV2());
         builder.ApplyConfiguration(new SchedulesConfigurationV2());
         

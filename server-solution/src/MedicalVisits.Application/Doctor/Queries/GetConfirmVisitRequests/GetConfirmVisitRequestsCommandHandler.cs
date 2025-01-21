@@ -13,9 +13,9 @@ namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
 public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmVisitRequestsCommand, RouteResponse>
 {
-    public readonly ApplicationDbContext _dbContext;
-    public readonly UserManager<ApplicationUser> _userManager;
-    public readonly IGeocodingService _geocodingService;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IGeocodingService _geocodingService;
     private readonly IRouteService _routeService;
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
         UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient, IRouteService routeService)
@@ -31,12 +31,12 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
     {
         
 
-        var visits = _dbContext.TimeSlots
-            .Where(ts => ts.WorkPlan.UserId == request.DoctorId)
-            .Where(ts => ts.RequestId != null)
-            .Include(ts => ts.Request)
+        var visits = _dbContext.DoctorIntervals
+            .Where(ts => ts.DoctorSchedules.DoctorId == request.DoctorId)
+            .Where(ts => ts.VisitRequestId != null)
+            .Include(ts => ts.VisitRequest)
             .ThenInclude(v => v.Patient)
-            .Select(ts => ts.Request)
+            .Select(ts => ts.VisitRequest)
           .ToList();
         
         
