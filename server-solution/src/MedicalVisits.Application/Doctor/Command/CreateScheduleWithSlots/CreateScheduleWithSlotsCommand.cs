@@ -6,14 +6,14 @@ namespace MedicalVisits.Application.Doctor.Command.CreateScheduleWithSlots;
 public class CreateScheduleWithSlotsCommand : IRequest<bool>
 {
 
-    public CreateScheduleWithSlotsCommand(ScheduleRequestDto scheduleRequestDto, string DoctorId)
+    public CreateScheduleWithSlotsCommand(ScheduleRequest scheduleRequest, string DoctorId)
     {
-        ScheduleRequestDto = scheduleRequestDto;
+        ScheduleRequest = scheduleRequest;
         this.DoctorId = DoctorId;
     }
         
     
     public string DoctorId { get; init; }
-    public ScheduleRequestDto ScheduleRequestDto { get; set; }
+    public ScheduleRequest ScheduleRequest { get; set; }
     
 }

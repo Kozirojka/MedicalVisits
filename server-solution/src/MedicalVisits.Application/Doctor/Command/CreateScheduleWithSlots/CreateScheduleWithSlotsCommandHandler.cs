@@ -43,19 +43,19 @@ public class CreateScheduleWithSlotsCommandHandler : IRequestHandler<CreateSched
         return false;
     }
 
-    if (request.ScheduleRequestDto._timeSlots == null || !request.ScheduleRequestDto._timeSlots.Any())
+    if (request.ScheduleRequest._timeSlots == null || !request.ScheduleRequest._timeSlots.Any())
     {
         _logger.LogWarning("No time slots provided for the schedule.");
         return false;
     }
 
-    if (request.ScheduleRequestDto._timeSlots.Any(ts => ts.StartTime >= ts.EndTime))
+    if (request.ScheduleRequest._timeSlots.Any(ts => ts.StartTime >= ts.EndTime))
     {
         _logger.LogError("Invalid time slots provided: StartTime must be earlier than EndTime.");
         return false;
     }
     
-    List<TimeSlot> timeSlots = request.ScheduleRequestDto._timeSlots
+    List<TimeSlot> timeSlots = request.ScheduleRequest._timeSlots
         .Select(ts => new TimeSlot
         {
             StartTime = ts.StartTime,
@@ -66,7 +66,7 @@ public class CreateScheduleWithSlotsCommandHandler : IRequestHandler<CreateSched
     var doctorSchedule = new ScheduleWorkPlan
     {
         UserId = userId,
-        NameOfSchedule = request.ScheduleRequestDto.Name,
+        NameOfSchedule = request.ScheduleRequest.Name,
         TimeSlots = timeSlots
     };
 

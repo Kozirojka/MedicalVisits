@@ -110,7 +110,7 @@ public class DoctorController : BaseController
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("set/scheduleSlots")]
-    public async Task<IActionResult> SetScheduleAndSlots(ScheduleRequestDto dto)
+    public async Task<IActionResult> SetScheduleAndSlots(ScheduleRequest dto)
     {
         var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
