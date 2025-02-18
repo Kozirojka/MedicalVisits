@@ -11,7 +11,7 @@ public class GetIntervals(IMediator _mediator, IUserService userService) : Endpo
 {
     public override void Configure()
     {
-        Get("/api/doctor/intervals");
+            Get("/api/doctor/intervals");
         Roles("Doctor");
     }
 

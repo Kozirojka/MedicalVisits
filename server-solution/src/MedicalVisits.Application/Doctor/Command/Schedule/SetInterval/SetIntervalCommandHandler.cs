@@ -1,57 +1,76 @@
 ﻿using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
-using MedicalVisits.Infrastructure.Services.Interfaces;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Entities.ScheduleV2;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
-
-public class SetIntervalCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<SetIntervalCommand, bool>
+namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval
 {
-    public async Task<bool> Handle(SetIntervalCommand request, CancellationToken cancellationToken)
+    public class SetIntervalCommandHandler : IRequestHandler<SetIntervalCommand, bool>
     {
-        var doctorProfile = dbContext.DoctorProfiles.SingleOrDefault(user => user.UserId == request.DoctorId);
-        
-        if (doctorProfile == null)
+        private readonly ApplicationDbContext _dbContext;
+
+        public SetIntervalCommandHandler(ApplicationDbContext dbContext)
         {
-            return await Task.FromResult(false);
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        var newInterval = new DoctorIntervals()
+        public async Task<bool> Handle(SetIntervalCommand request, CancellationToken cancellationToken)
         {
-            Doctor = doctorProfile,
-            DoctorId = doctorProfile.Id,
-            EndInterval = request.EndInterval,
-            StartInterval = request.StartInterval
-        };
+            var doctorProfile = await _dbContext.DoctorProfiles
+                .SingleOrDefaultAsync(dp => dp.UserId == request.DoctorId, cancellationToken);
 
-        if (request.DoctorScheduleId == null)
-        {
-            var newDoctorSchedule = new DoctorSchedules()
+            var searchableDay = await _dbContext.DoctorSchedules
+                .SingleOrDefaultAsync(u => u.Time.Date == request.StartInterval.Date, cancellationToken);
+
+            if (doctorProfile == null)
+            {
+                return false;
+            }
+
+            DoctorSchedules doctorSchedule;
+            if (searchableDay == null)
+            {
+                doctorSchedule = new DoctorSchedules
+                {
+                    Doctor = doctorProfile,
+                    DoctorId = doctorProfile.Id,
+                    DayOfWeek = request.StartInterval.DayOfWeek,
+                    MinimumAppointments = 5,
+                    IsAvailable = true,
+                    Time = request.StartInterval
+                };
+                _dbContext.DoctorSchedules.Add(doctorSchedule);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                doctorSchedule = await _dbContext.DoctorSchedules
+                    .SingleOrDefaultAsync(u => u.Id == searchableDay.Id, cancellationToken);
+                
+                if (doctorSchedule == null)
+                {
+                    return false;
+                }
+            }
+
+            var newInterval = new DoctorIntervals
             {
                 Doctor = doctorProfile,
                 DoctorId = doctorProfile.Id,
-                DayOfWeek = request.StartInterval.DayOfWeek,
-                MinimumAppointments = 5,
-                IsAvailable = true
-            };
+                DoctorSchedules = doctorSchedule,
+                DoctorScheduleId = doctorSchedule.Id,
+                EndInterval = request.EndInterval,
+                StartInterval = request.StartInterval
+            }; 
 
-            dbContext.DoctorSchedules.Add(newDoctorSchedule);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.DoctorIntervals.Add(newInterval);
+            int result = await _dbContext.SaveChangesAsync(cancellationToken);
 
-            newInterval.DoctorScheduleId = newDoctorSchedule.Id;
+            return result > 0;
         }
-
-        dbContext.DoctorIntervals.Add(newInterval);
-        int result = await dbContext.SaveChangesAsync(cancellationToken);
-
-        if (result <= 0) 
-        {
-            return await Task.FromResult(false);
-        }
-
-        return await Task.FromResult(true);
     }
 }

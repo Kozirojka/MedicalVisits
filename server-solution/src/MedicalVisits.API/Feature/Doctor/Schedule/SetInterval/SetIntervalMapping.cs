@@ -8,7 +8,6 @@ public static class SetIntervalMapping
     {
         return new SetIntervalCommand(request.StartDate,
             request.EndDate,
-            request.DoctorScheduleId,
             request.VisitRequestId,
             userId);
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MedicalVisits.API.Feature.Doctor.Schedule.SetInterval;
 
-public sealed record SetIntervalRequest(DateTime StartDate, DateTime EndDate, int? DoctorScheduleId, int? VisitRequestId);
+public sealed record SetIntervalRequest(DateTime StartDate, DateTime EndDate, int? VisitRequestId);
 
 public class SetIntervalEndpoint(IMediator mediator, IUserService service) : Endpoint<SetIntervalRequest, Results<Ok<bool>, NotFound, ProblemDetails>>
 {
@@ -18,7 +18,7 @@ public class SetIntervalEndpoint(IMediator mediator, IUserService service) : End
     public override async Task<Results<Ok<bool>, NotFound, ProblemDetails>> ExecuteAsync(SetIntervalRequest req, CancellationToken ct)
     {
         var doctorId = service.GetUserId(HttpContext.User);
-        
+         
         var command = req.ToCommand(doctorId);
     
         var result = await mediator.Send(command, ct);

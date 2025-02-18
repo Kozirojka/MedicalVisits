@@ -9,7 +9,7 @@ public class DoctorIntervals
     public DateTime StartInterval { get; set; }
     public DateTime EndInterval { get; set; }
     
-    public DoctorSchedules DoctorSchedules { get; set; }
+    public DoctorSchedules? DoctorSchedules { get; set; }
     public int? DoctorScheduleId { get; set; }
     
     public VisitRequest? VisitRequest { get; set; }
