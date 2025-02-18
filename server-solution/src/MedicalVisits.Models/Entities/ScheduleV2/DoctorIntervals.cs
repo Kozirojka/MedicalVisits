@@ -10,15 +10,15 @@ public class DoctorIntervals
     public DateTime EndInterval { get; set; }
     
     public DoctorSchedules DoctorSchedules { get; set; }
-    public int DoctorScheduleId { get; set; }
+    public int? DoctorScheduleId { get; set; }
     
     public VisitRequest? VisitRequest { get; set; }
     public int? VisitRequestId { get; set; }
 
 
 
-    public void SetVisitRequest(int RequestId)
+    public void SetVisitRequest(int requestId)
     {
-        VisitRequestId = RequestId;
+        VisitRequestId = requestId;
     }
 }

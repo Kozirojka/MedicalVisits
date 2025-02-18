@@ -30,7 +30,7 @@ public class AttachVisitResultToDoctorEndpoint(IMediator _mediator) : Endpoint<V
             VisitRequestId = req.VisitId
         };
         
-        ResultOfAttach result = await _mediator.Send(command);
+        ResultOfAttach result = await _mediator.Send(command, ct);
         
         
         if (result == null)

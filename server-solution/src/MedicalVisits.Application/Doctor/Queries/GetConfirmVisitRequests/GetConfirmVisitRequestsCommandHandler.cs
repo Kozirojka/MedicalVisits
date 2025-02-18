@@ -16,6 +16,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IGeocodingService _geocodingService;
     private readonly IRouteService _routeService;
+    
     public GetConfirmVisitRequestsCommandHandler(ApplicationDbContext dbContext,
         UserManager<ApplicationUser> userManager, IGeocodingService geocodingService, HttpClient httpClient, IRouteService routeService)
     {
@@ -28,7 +29,6 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
     public async Task<RouteResponse> Handle(GetConfirmVisitRequestsCommand request,
         CancellationToken cancellationToken)
     {
-        
 
         var visits = _dbContext.DoctorIntervals
             .Where(ts => ts.DoctorSchedules.Doctor.User.Id == request.DoctorId)
@@ -40,7 +40,7 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         
         
         
-        if (!visits.Any())
+        if (visits.Count == 0)
         {
             return new RouteResponse(); 
         }

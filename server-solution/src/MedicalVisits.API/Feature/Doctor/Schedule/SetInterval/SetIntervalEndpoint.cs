@@ -1,23 +1,25 @@
 ﻿using FastEndpoints;
 using MediatR;
-using MedicalVisits.Models.Entities.ScheduleV2;
+using MedicalVisits.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MedicalVisits.API.Feature.Doctor.Schedule.SetInterval;
 
-public sealed record SetIntervalRequest(List<DoctorIntervals> DoctorIntervals);
+public sealed record SetIntervalRequest(DateTime StartDate, DateTime EndDate, int? DoctorScheduleId, int? VisitRequestId);
 
-public class SetIntervalEndpoint(IMediator mediator) : Endpoint<SetIntervalRequest, Results<Ok<bool>, NotFound, ProblemDetails>>
+public class SetIntervalEndpoint(IMediator mediator, IUserService service) : Endpoint<SetIntervalRequest, Results<Ok<bool>, NotFound, ProblemDetails>>
 {
-
+    
     public override void Configure()
     {
-        Post("/api/admin/set-interval");
+        Post("/api/doctor/interval");
     }
 
     public override async Task<Results<Ok<bool>, NotFound, ProblemDetails>> ExecuteAsync(SetIntervalRequest req, CancellationToken ct)
     {
-        var command = req.ToCommand();
+        var doctorId = service.GetUserId(HttpContext.User);
+        
+        var command = req.ToCommand(doctorId);
     
         var result = await mediator.Send(command, ct);
         

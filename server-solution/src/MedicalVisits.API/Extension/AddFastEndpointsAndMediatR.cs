@@ -21,7 +21,8 @@ public static class FastEndpointsAndMediatRExtensions
 
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssemblyContaining<GetPendingRequestsForDoctorCommand>());
-
+        
+        
         return services;
     }
 }

@@ -5,13 +5,8 @@ using MedicalVisits.Models.Enums;
 
 namespace MedicalVisits.Application.Doctor.Queries.GetConfirmVisitRequests;
 
-public class GetConfirmVisitRequestsCommand : IRequest<RouteResponse>
+public class GetConfirmVisitRequestsCommand(string doctorId) : IRequest<RouteResponse>
 {
-    public GetConfirmVisitRequestsCommand(string doctorId)
-    {
-        DoctorId = doctorId;
-    }
-
-    public readonly string DoctorId;
+    public readonly string DoctorId = doctorId;
     public readonly VisitStatus Status = VisitStatus.Approved;
 }
