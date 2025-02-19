@@ -86,17 +86,17 @@ public class DoctorController : BaseController
     // візит вважається підтвержнний якщо він був у AssignDoctorToVisit function
     //todo: пристосувати цю функцію, під наш розкад, потрібно добавити у повернення інформацію про TimeSlots
     //Timeslot якщо він підтверджений має інформацію про візит
-    [HttpGet("visits/confirmed")]
-    public async Task<IActionResult> GetConfirmedVisits()
-    {
-        var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
-        var command = new GetConfirmVisitRequestsCommand(doctorId);
-
-        var result =  await  _Mediator.Send(command);
-        
-        return Ok(result);
-    }
+    // [HttpGet("visits/confirmed")]
+    // public async Task<IActionResult> GetConfirmedVisits()
+    // {
+    //     var doctorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //     
+    //     var command = new GetConfirmVisitRequestsCommand(doctorId);
+    //
+    //     var result =  await  _Mediator.Send(command);
+    //     
+    //     return Ok(result);
+    // }
 
     [HttpGet("medical-card")]
     public async Task<IActionResult> GetMedicalCard()

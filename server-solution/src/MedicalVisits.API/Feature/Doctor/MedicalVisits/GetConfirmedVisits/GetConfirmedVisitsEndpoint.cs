@@ -6,26 +6,40 @@ using MedicalVisits.Models.diraction;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MedicalVisits.API.Feature.Doctor.MedicalVisits.GetConfirmedVisits;
+public class GetConfirmedVisitsRequest
+{
+    public DateTime SelectedDay { get; set; }
+}
 
-public class GetConfirmedVisitsEndpoint(IUserService userService, IMediator mediator) : EndpointWithoutRequest<
-    Results<Ok<RouteResponse>,
-        NotFound, ProblemDetails>>
+public class GetConfirmedVisitsEndpoint(IUserService userService, IMediator mediator) : Endpoint<GetConfirmedVisitsRequest,
+    Results<Ok<RouteResponse>, NotFound, ProblemDetails>>
 {
     public override void Configure()
     {
-        Get("/api/v2/doctor/visits/confirmed-visits");
+        Get("/api/v2/doctor/visits/confirmed-visits/{selectedDay}");
         Roles("Doctor");
     }
 
-    public override async Task<Results<Ok<RouteResponse>, NotFound, ProblemDetails>> ExecuteAsync(CancellationToken ct)
+    public override async Task<Results<Ok<RouteResponse>, NotFound, ProblemDetails>> ExecuteAsync(GetConfirmedVisitsRequest selectedDay, CancellationToken ct)
     {
-        
+        Console.WriteLine($"Отримано selectedDay: '{selectedDay.SelectedDay}'");
+    
+    
         var doctorId = userService.GetUserId(HttpContext.User);
-        
-        var command = new GetConfirmVisitRequestsCommand(doctorId);
-
-        var result =  await mediator.Send(command, ct);
-        
+        if (string.IsNullOrEmpty(doctorId))
+        {
+            return TypedResults.NotFound();
+        }
+    
+        var command = new GetConfirmVisitRequestsCommand(doctorId, selectedDay.SelectedDay);
+        var result = await mediator.Send(command, ct);
+    
+        if (result is null)
+        {
+            return TypedResults.NotFound();
+        }
+    
         return TypedResults.Ok(result);
     }
+
 }
