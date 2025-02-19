@@ -1,76 +1,97 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using MedicalVisits.Infrastructure.Persistence;
 using MedicalVisits.Models.Entities;
 using MedicalVisits.Models.Entities.ScheduleV2;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 
 namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval
 {
     public class SetIntervalCommandHandler : IRequestHandler<SetIntervalCommand, bool>
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IMediator _mediator;
 
-        public SetIntervalCommandHandler(ApplicationDbContext dbContext)
+        public SetIntervalCommandHandler(ApplicationDbContext dbContext, IMediator mediator)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _mediator = mediator;
         }
 
         public async Task<bool> Handle(SetIntervalCommand request, CancellationToken cancellationToken)
         {
-            var doctorProfile = await _dbContext.DoctorProfiles
-                .SingleOrDefaultAsync(dp => dp.UserId == request.DoctorId, cancellationToken);
-
-            var searchableDay = await _dbContext.DoctorSchedules
-                .SingleOrDefaultAsync(u => u.Time.Date == request.StartInterval.Date, cancellationToken);
-
-            if (doctorProfile == null)
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            try
             {
-                return false;
-            }
+                var doctorProfile = await _dbContext.DoctorProfiles
+                    .SingleOrDefaultAsync(dp => dp.UserId == request.DoctorId, cancellationToken);
 
-            DoctorSchedules doctorSchedule;
-            if (searchableDay == null)
-            {
-                doctorSchedule = new DoctorSchedules
-                {
-                    Doctor = doctorProfile,
-                    DoctorId = doctorProfile.Id,
-                    DayOfWeek = request.StartInterval.DayOfWeek,
-                    MinimumAppointments = 5,
-                    IsAvailable = true,
-                    Time = request.StartInterval
-                };
-                _dbContext.DoctorSchedules.Add(doctorSchedule);
-                await _dbContext.SaveChangesAsync(cancellationToken);
-            }
-            else
-            {
-                doctorSchedule = await _dbContext.DoctorSchedules
-                    .SingleOrDefaultAsync(u => u.Id == searchableDay.Id, cancellationToken);
-                
-                if (doctorSchedule == null)
+                if (doctorProfile == null)
                 {
                     return false;
                 }
+
+                var existingSchedule = await _dbContext.DoctorSchedules
+                    .SingleOrDefaultAsync(schedule => schedule.Time.Date == request.StartInterval.Date, cancellationToken);
+
+                DoctorSchedules doctorSchedule;
+                if (existingSchedule == null)
+                {
+                    doctorSchedule = new DoctorSchedules
+                    {
+                        Doctor = doctorProfile,
+                        DoctorId = doctorProfile.Id,
+                        DayOfWeek = request.StartInterval.DayOfWeek,
+                        MinimumAppointments = 5, 
+                        IsAvailable = true,
+                        Time = request.StartInterval
+                    };
+
+                    _dbContext.DoctorSchedules.Add(doctorSchedule);
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                }
+                else
+                {
+                    doctorSchedule = await _dbContext.DoctorSchedules
+                        .SingleOrDefaultAsync(schedule => schedule.Id == existingSchedule.Id, cancellationToken);
+
+                    if (doctorSchedule == null)
+                    {
+                        return false;
+                    }
+                }
+
+                var newInterval = new DoctorIntervals
+                {
+                    Doctor = doctorProfile,
+                    DoctorId = doctorProfile.Id,
+                    DoctorSchedules = doctorSchedule,
+                    DoctorScheduleId = doctorSchedule.Id,
+                    StartInterval = request.StartInterval,
+                    EndInterval = request.EndInterval
+                };
+
+                var assignDoctorCommand = new AssignDoctorToVisitCommand(
+                    request.VisitRequestId,
+                    doctorProfile.UserId,
+                    doctorSchedule.Id);
+
+                var assignmentResult = await _mediator.Send(assignDoctorCommand, cancellationToken);
+
+                _dbContext.DoctorIntervals.Add(newInterval);
+                var changesSaved = await _dbContext.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
+                return changesSaved > 0;
             }
-
-            var newInterval = new DoctorIntervals
+            catch (Exception)
             {
-                Doctor = doctorProfile,
-                DoctorId = doctorProfile.Id,
-                DoctorSchedules = doctorSchedule,
-                DoctorScheduleId = doctorSchedule.Id,
-                EndInterval = request.EndInterval,
-                StartInterval = request.StartInterval
-            }; 
-
-            _dbContext.DoctorIntervals.Add(newInterval);
-            int result = await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return result > 0;
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
         }
     }
 }

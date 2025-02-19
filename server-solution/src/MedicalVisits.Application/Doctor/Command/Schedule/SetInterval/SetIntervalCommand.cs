@@ -6,12 +6,12 @@ namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval;
 public class SetIntervalCommand(
     DateTime StartInterval,
     DateTime EndInterval,  
-    int? VisitRequestId,   
+    int VisitRequestId,   
     string doctorId) : IRequest<bool>
 {
     public DateTime StartInterval { get; } = StartInterval;
     public DateTime EndInterval { get; } = EndInterval;
-    public int? VisitRequestId { get; } = VisitRequestId;
+    public int VisitRequestId { get; } = VisitRequestId;
 
     public readonly string DoctorId = doctorId;
 
