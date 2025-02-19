@@ -10,16 +10,10 @@ using MedicalVisits.Application.Doctor.Command.AssignDoctorToVisit;
 
 namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval
 {
-    public class SetIntervalCommandHandler : IRequestHandler<SetIntervalCommand, bool>
+    public class SetIntervalCommandHandler(ApplicationDbContext dbContext, IMediator mediator)
+        : IRequestHandler<SetIntervalCommand, bool>
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IMediator _mediator;
-
-        public SetIntervalCommandHandler(ApplicationDbContext dbContext, IMediator mediator)
-        {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _mediator = mediator;
-        }
+        private readonly ApplicationDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         public async Task<bool> Handle(SetIntervalCommand request, CancellationToken cancellationToken)
         {
@@ -71,7 +65,9 @@ namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval
                     DoctorSchedules = doctorSchedule,
                     DoctorScheduleId = doctorSchedule.Id,
                     StartInterval = request.StartInterval,
-                    EndInterval = request.EndInterval
+                    EndInterval = request.EndInterval,
+                    VisitRequestId = request.VisitRequestId
+                    
                 };
 
                 var assignDoctorCommand = new AssignDoctorToVisitCommand(
@@ -79,7 +75,7 @@ namespace MedicalVisits.Application.Doctor.Command.Schedule.SetInterval
                     doctorProfile.UserId,
                     doctorSchedule.Id);
 
-                var assignmentResult = await _mediator.Send(assignDoctorCommand, cancellationToken);
+                var assignmentResult = await mediator.Send(assignDoctorCommand, cancellationToken);
 
                 _dbContext.DoctorIntervals.Add(newInterval);
                 var changesSaved = await _dbContext.SaveChangesAsync(cancellationToken);

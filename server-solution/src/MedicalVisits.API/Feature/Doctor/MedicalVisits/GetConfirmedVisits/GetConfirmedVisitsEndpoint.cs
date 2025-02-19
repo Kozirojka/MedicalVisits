@@ -30,8 +30,8 @@ public class GetConfirmedVisitsEndpoint(IUserService userService, IMediator medi
         {
             return TypedResults.NotFound();
         }
-    
-        var command = new GetConfirmVisitRequestsCommand(doctorId, selectedDay.SelectedDay);
+        var utcSelectedDay = selectedDay.SelectedDay.ToUniversalTime();
+        var command = new GetConfirmVisitRequestsCommand(doctorId, utcSelectedDay);
         var result = await mediator.Send(command, ct);
     
         if (result is null)

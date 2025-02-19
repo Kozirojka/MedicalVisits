@@ -30,16 +30,16 @@ public class GetConfirmVisitRequestsCommandHandler : IRequestHandler<GetConfirmV
         CancellationToken cancellationToken)
     {
 
+        var existingSchedule = await _dbContext.DoctorSchedules
+            .SingleOrDefaultAsync(schedule => schedule.Time.Date == request.SelectedDay.Date, cancellationToken);
+
         var visits = _dbContext.DoctorIntervals
-            .Where(ts => ts.DoctorSchedules.Doctor.User.Id == request.DoctorId)
-            .Where(ts => ts.VisitRequestId != null)
+            .Where(dr => dr.DoctorScheduleId == existingSchedule.Id)
             .Include(ts => ts.VisitRequest)
             .ThenInclude(v => v.Patient)
-            .Select(ts => ts.VisitRequest)
-          .ToList();
-        
-        
-        
+            .Select(ts => ts.VisitRequest).ToList();
+            
+     
         if (visits.Count == 0)
         {
             return new RouteResponse(); 
